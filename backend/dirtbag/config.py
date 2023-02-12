@@ -13,11 +13,11 @@ class Settings(BaseSettings):
         "https://dirtbag.gnerd.dk",
     ]
     static_directory: Path = "/static"
-    db_file_trips: Path = "/tmp/trips.json"
-    db_file_27cache: Path = "/tmp/27cache.json"
-    db_file_users: Path = "/tmp/users.json"
-    db_file_todos: Path = "/tmp/todos.json"
-    db_file_sends: Path = "/tmp/sends.json"
+    db_file_trips: Path = "/data/trips.json"
+    db_file_27cache: Path = "/data/27cache.json"
+    db_file_users: Path = "/data/users.json"
+    db_file_todos: Path = "/data/todos.json"
+    db_file_sends: Path = "/data/sends.json"
     sentry_dsn: str = None
     tz: tzfile = gettz("Europe/Copenhagen")
 
