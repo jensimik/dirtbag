@@ -173,10 +173,12 @@ async def trip(trip_id: int) -> schemas.Trip:
             for k, g in itertools.groupby(data, key=lambda d: d["app_url"]):
                 lg = list(g)
                 user_ids = [i["user_id"] for i in lg]
+                # unpack all users comments
+                comments = [u for i in lg for u in i["comment"]]
                 yield {
                     **lg[0],
                     "user_ids": user_ids,
-                    "comments": list(parse_comments(lg)),
+                    "comments": comments,
                 }
 
         grouped_data = sorted(

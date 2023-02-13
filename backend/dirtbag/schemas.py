@@ -20,7 +20,7 @@ class BaseTodo(BaseModel):
 class Comment(BaseModel):
     type: str
     text: str
-    link: Optional[str]
+    url: Optional[str]
 
 
 class TripTodo(BaseTodo):
