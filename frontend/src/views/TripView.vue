@@ -130,8 +130,9 @@ chartData.value = {
                     <div class="thumb"></div>
                     <div class="comment"><span class="comment" v-for="comment in todo.comments"><a :href="comment.url"
                                 v-if="comment.type == 'link'">
-                                <svg v-if="comment.url.includes('youtube')" class="youtube" viewBox="0 0 159 110"
-                                    width="159" height="110" xmlns="http://www.w3.org/2000/svg">
+                                <svg v-if="comment.url.includes('youtube') || comment.url.includes('youtu.be')"
+                                    class="youtube" viewBox="0 0 159 110" width="159" height="110"
+                                    xmlns="http://www.w3.org/2000/svg">
                                     <path
                                         d="m154 17.5c-1.82-6.73-7.07-12-13.8-13.8-9.04-3.49-96.6-5.2-122 0.1-6.73 1.82-12 7.07-13.8 13.8-4.08 17.9-4.39 56.6 0.1 74.9 1.82 6.73 7.07 12 13.8 13.8 17.9 4.12 103 4.7 122 0 6.73-1.82 12-7.07 13.8-13.8 4.35-19.5 4.66-55.8-0.1-75z"
                                         fill="#f00" />
