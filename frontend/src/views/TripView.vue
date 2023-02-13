@@ -110,21 +110,25 @@ chartData.value = {
                     :href="'https://maps.google.com/?q=@' + sector.location[0] + ',' + sector.location[1] + ',10z'">📍</a>
             </h3>
             <div v-for="todo in sector.todos">
-                <div class="flex three">
-                    <div class="four-fifth"><a :href="$isMobile() ? todo.app_url : todo.url"><img class="thumb"
-                                :src="todo.thumb_url" />
-                            {{ todo.grade }} {{ todo.name }}</a></div>
-                    <div class="fifth right">
+                <div class="flex grow tester">
+                    <div class="thumb">
+                        <a :href="$isMobile() ? todo.app_url : todo.url"><img class="thumb" :src="todo.thumb_url" /></a>
+                    </div>
+                    <div class="todo_title">
+                        <a :href="$isMobile() ? todo.app_url : todo.url">{{ todo.grade }} {{ todo.name }}</a>
+                    </div>
+                    <div class="right">
                         <router-link :to="{ name: 'user', params: { id: participants[user_id].id } }"
                             v-for="user_id in todo.user_ids" :key="user_id"><img class="thumb"
                                 :src="participants[user_id].thumb_url"
                                 :title="participants[user_id].name" /></router-link>
                     </div>
                 </div>
-                <div v-if="todo.comment">
-                    <div>{{ todo.comment }}</div>
+                <div class="flex grow tester2" v-if="todo.comment">
+                    <div class="thumb"></div>
+                    <div class="comment"><span v-for="comment in todo.comments">{{ comment }}</span></div>
                 </div>
-                <div class="flex one" v-if="todo.name == 'Symbiose'">
+                <!-- <div class="flex one" v-if="todo.name == 'Symbiose'">
                     <div class="off-abit">
                         <a href="https://bettybeta.com/bouldering/fontainebleau/95-2-ouest/symbiose">
                             <svg class="youtube" viewBox="0 0 159 110" width="159" height="110"
@@ -137,7 +141,7 @@ chartData.value = {
                             betty beta
                         </a>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
@@ -145,8 +149,33 @@ chartData.value = {
 </template>
 
 <style scoped>
-.off-abit {
-    margin-left: 2em;
+div.tester {
+    justify-content: stretch;
+}
+
+div.tester2 {
+    margin-top: -1.5em;
+    justify-content: stretch;
+}
+
+div.thumb {
+    width: 2em;
+    flex-grow: 0;
+}
+
+div.comment {
+    width: auto;
+    flex-grow: 1;
+}
+
+div.comment span {
+    font-size: 0.6em;
+}
+
+div.todo_title {
+    width: auto;
+    flex-grow: 1;
+
 }
 
 svg.youtube {
