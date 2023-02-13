@@ -115,9 +115,11 @@ chartData.value = {
                         <a :href="$isMobile() ? todo.app_url : todo.url"><img class="thumb" :src="todo.thumb_url" /></a>
                     </div>
                     <div class="todo_title">
-                        <a :href="$isMobile() ? todo.app_url : todo.url">{{ todo.grade }} {{ todo.name }}</a>
+                        <a :href="$isMobile() ? todo.app_url : todo.url">{{ todo.grade }} {{
+                            todo.name
+                        }}</a>
                     </div>
-                    <div class="right">
+                    <div class="participants">
                         <router-link :to="{ name: 'user', params: { id: participants[user_id].id } }"
                             v-for="user_id in todo.user_ids" :key="user_id"><img class="thumb"
                                 :src="participants[user_id].thumb_url"
@@ -126,18 +128,23 @@ chartData.value = {
                 </div>
                 <div class="flex grow tester2" v-if="todo.comment">
                     <div class="thumb"></div>
-                    <div class="comment"><span v-for="comment in todo.comments">{{ comment }}</span></div>
+                    <div class="comment"><span class="comment" v-for="comment in todo.comments"><a :href="comment.url"
+                                v-if="comment.type == 'link'">
+                                <svg v-if="comment.url.includes('youtube')" class="youtube" viewBox="0 0 159 110"
+                                    width="159" height="110" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="m154 17.5c-1.82-6.73-7.07-12-13.8-13.8-9.04-3.49-96.6-5.2-122 0.1-6.73 1.82-12 7.07-13.8 13.8-4.08 17.9-4.39 56.6 0.1 74.9 1.82 6.73 7.07 12 13.8 13.8 17.9 4.12 103 4.7 122 0 6.73-1.82 12-7.07 13.8-13.8 4.35-19.5 4.66-55.8-0.1-75z"
+                                        fill="#f00" />
+                                    <path d="m105 55-40.8-23.4v46.8z" fill="#fff" />
+                                </svg>
+                                <span v-else>{{ comment.text }}</span>
+                            </a>
+                            <span v-else>{{ comment.text }}</span>
+                            &MediumSpace;</span></div>
                 </div>
                 <!-- <div class="flex one" v-if="todo.name == 'Symbiose'">
                     <div class="off-abit">
                         <a href="https://bettybeta.com/bouldering/fontainebleau/95-2-ouest/symbiose">
-                            <svg class="youtube" viewBox="0 0 159 110" width="159" height="110"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="m154 17.5c-1.82-6.73-7.07-12-13.8-13.8-9.04-3.49-96.6-5.2-122 0.1-6.73 1.82-12 7.07-13.8 13.8-4.08 17.9-4.39 56.6 0.1 74.9 1.82 6.73 7.07 12 13.8 13.8 17.9 4.12 103 4.7 122 0 6.73-1.82 12-7.07 13.8-13.8 4.35-19.5 4.66-55.8-0.1-75z"
-                                    fill="#f00" />
-                                <path d="m105 55-40.8-23.4v46.8z" fill="#fff" />
-                            </svg>
                             betty beta
                         </a>
                     </div>
@@ -159,7 +166,8 @@ div.tester2 {
 }
 
 div.thumb {
-    width: 2em;
+    flex-basis: 2em;
+    /* width: 2em; */
     flex-grow: 0;
 }
 
@@ -168,14 +176,20 @@ div.comment {
     flex-grow: 1;
 }
 
-div.comment span {
+div.comment span.comment {
     font-size: 0.6em;
 }
 
 div.todo_title {
-    width: auto;
-    flex-grow: 1;
+    flex-basis: calc(100% - 8em);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
+div.participants {
+    flex-basis: 4em;
+    text-align: right;
 }
 
 svg.youtube {
@@ -192,9 +206,6 @@ img.header {
     width: 100%;
 }
 
-div.right {
-    text-align: right;
-}
 
 div.met_license {
     text-align: right;

@@ -3,6 +3,12 @@ from datetime import datetime, date
 from typing import Literal, Optional, Union, AnyStr
 
 
+class Comment(BaseModel):
+    type: str
+    text: str
+    url: Optional[str]
+
+
 class BaseTodo(BaseModel):
     name: str
     grade: str
@@ -14,13 +20,7 @@ class BaseTodo(BaseModel):
     sector_app_url: str
     area_name: str
     area_url: str
-    comment: str
-
-
-class Comment(BaseModel):
-    type: str
-    text: str
-    url: Optional[str]
+    comment: Optional[list[Comment]]
 
 
 class TripTodo(BaseTodo):

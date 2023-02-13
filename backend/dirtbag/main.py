@@ -40,7 +40,7 @@ app.include_router(weather.router)
 # app.include_router(calendar.router)
 
 
-@app.on_event("startup")
+# @app.on_event("startup")
 # @repeat_every(seconds=60 * 60)
 async def _refresh_27crags():
     await refresh_27crags()

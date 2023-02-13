@@ -94,9 +94,10 @@ async def refresh_todo_list(username: str, client: httpx.AsyncClient):
             comment = []
             if ascent_details := tds[0].find("div.ascent-details", first=True):
                 for link in ascent_details.find("a"):
-                    o = urlparse(link.attrs["href"])
-                    comment.append({"type": "link", "url": link, "text": o.hostname})
-                else:
+                    url = link.attrs["href"]
+                    o = urlparse(url)
+                    comment.append({"type": "link", "url": url, "text": o.hostname})
+                if not comment:
                     comment = [{"type": "text", "text": ascent_details.text}]
             sector_url = (
                 "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
