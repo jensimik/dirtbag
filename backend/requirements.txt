@@ -22,6 +22,7 @@ httpx==0.23.3
 hyperframe==6.0.1
 idna==3.4
 importlib-metadata==6.0.0
+libgravatar==1.0.3
 lxml==4.9.2
 metno-locationforecast==1.1.0
 mypy-extensions==1.0.0

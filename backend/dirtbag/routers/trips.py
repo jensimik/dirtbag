@@ -2,6 +2,7 @@ import itertools
 from fastapi import APIRouter, Request, HTTPException, status
 from datetime import datetime, date
 from tinydb import where
+from libgravatar import Gravatar
 from dirtbag import schemas
 from dirtbag.helpers import DB_trips, DB_todos, DB_users, get_crag_location
 from dirtbag.config import settings
@@ -105,6 +106,7 @@ async def create_data():
                 "area_name": "Albarracin",
                 "date_from": date(2023, 3, 6).isoformat(),
                 "date_to": date(2023, 3, 30).isoformat(),
+                "pin": "1337",
                 "participants": [
                     {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"}
                 ],
@@ -115,6 +117,7 @@ async def create_data():
                 "area_name": "Fontainebleau",
                 "date_from": date(2023, 4, 6).isoformat(),
                 "date_to": date(2023, 4, 13).isoformat(),
+                "pin": "1337",
                 "participants": [
                     {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"},
                 ],
@@ -125,6 +128,7 @@ async def create_data():
                 "area_name": "Magic Wood",
                 "date_from": date(2023, 6, 19).isoformat(),
                 "date_to": date(2023, 6, 26).isoformat(),
+                "pin": "1337",
                 "participants": [
                     {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"}
                 ],
@@ -138,9 +142,14 @@ async def trips() -> list[schemas.TripList]:
         data = sorted(db_trips, key=lambda d: d["date_from"])
     res = []
     for trip in data:
-        async with DB_users as db_users:
-            users = db_users.search(where("user_id").one_of(trip.pop("participants")))
-        participants = [schemas.User(id=u.doc_id, **u) for u in users]
+        participants = [
+            schemas.User(
+                id=u.doc_id,
+                thumb_url=Gravatar(u["email"], default="retro").get_image(),
+                **u,
+            )
+            for u in trip["participants"]
+        ]
         duration = (
             date.fromisoformat(trip["date_to"]) - date.fromisoformat(trip["date_from"])
         ).days
@@ -163,8 +172,8 @@ async def trip_unauthed(trip_id):
 async def trip(trip_id: int, pin: str) -> schemas.Trip:
     async with (DB_trips as db_trips, DB_todos as db_todos, DB_users as db_users):
         trip = db_trips.get(doc_id=trip_id)
-
-        users = db_users.search(where("user_id").one_of(trip["participants"]))
+        if trip["pin"] != pin:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
 
         # get all todos for the trip area
         data = sorted(
@@ -202,7 +211,14 @@ async def trip(trip_id: int, pin: str) -> schemas.Trip:
             area_name=trip["area_name"],
             date_from=trip["date_from"],
             date_to=trip["date_to"],
-            participants=[schemas.User(id=u.doc_id, **u) for u in users],
+            participants=[
+                schemas.User(
+                    id=u.doc_id,
+                    thumb_url=Gravatar(u["email"], default="retro").get_image(),
+                    **u,
+                )
+                for u in trip["participants"]
+            ],
             sectors=[
                 schemas.Sector(
                     name=k,
