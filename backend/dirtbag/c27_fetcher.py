@@ -2,7 +2,7 @@ import httpx
 import hashlib
 from requests_html import HTML
 from datetime import datetime
-from .helpers import DB_27cache, DB_todos, where
+from .helpers import DB_27cache, DB_todos, DB_users, where, tinydb_set
 from .config import settings
 
 
@@ -16,14 +16,17 @@ def get_app_argument_from_html(html) -> str:
 async def get_problem_data(problem_url: str, client: httpx.AsyncClient) -> str:
     async with DB_27cache as db:
         data = db.get(where("problem_url") == problem_url)
-        if data:
-            return data["app_argument"]
+    if data:
+        return data["app_argument"]
     r = await client.get(problem_url)
     if r.is_success:
         # to get big image and canvas markup i have to be logged in for premium sites
         app_argument = get_app_argument_from_html(html=HTML(html=r.content))
     async with DB_27cache as db:
-        data = db.insert({"problem_url": problem_url, "app_argument": app_argument})
+        data = db.upsert(
+            {"problem_url": problem_url, "app_argument": app_argument},
+            where("problem_url") == problem_url,
+        )
     return app_argument
 
 
@@ -31,8 +34,8 @@ async def get_sector_data(sector_url: str, client: httpx.AsyncClient) -> dict:
     # check cache first
     async with DB_27cache as db:
         data = db.get(where("sector_url") == sector_url)
-        if data:
-            return data
+    if data:
+        return data
     # no cache result then fetch
     r = await client.get(sector_url)
     if r.is_success:
@@ -46,18 +49,32 @@ async def get_sector_data(sector_url: str, client: httpx.AsyncClient) -> dict:
         else:
             area_url = ""
             area_name = ""
-    data = {
-        "area_url": area_url,
-        "area_name": area_name,
-        "app_url": app_url,
-        "sector_url": sector_url,
-    }
-    async with DB_27cache as db:
-        db.insert(data)
-    return data
+        sector_thumb_url = html.find("meta[property='og:image']", first=True).attrs[
+            "content"
+        ]
+        data = {
+            "area_url": area_url,
+            "area_name": area_name,
+            "app_url": app_url,
+            "sector_url": sector_url,
+            "sector_thumb_url": sector_thumb_url,
+        }
+        async with DB_27cache as db:
+            db.upsert(data, where("sector_url") == sector_url)
+        return data
+    raise Exception(f"Sector not found {sector_url}")
 
 
 async def refresh_todo_list(username: str, client: httpx.AsyncClient):
+    # first get users profile photo
+    # r = await client.get(f"https://27crags.com/climbers/{username}")
+    # if r.is_success:
+    #     html = HTML(html=r.content)
+    #     img_url = html.find("meta[property='og:image']", first=True).attrs["content"]
+    #     async with DB_users as db:
+    #         db.update(tinydb_set("img_url", img_url), where("username") == username)
+
+    # now get the todo list
     batch_id = datetime.utcnow().isoformat()
     r = await client.get(f"https://27crags.com/climbers/{username}/ascents/todo")
     if r.is_success:
@@ -96,6 +113,7 @@ async def refresh_todo_list(username: str, client: httpx.AsyncClient):
                 "sector_name": sector_name,
                 "sector_url": sector_url,
                 "sector_app_url": sector_data["app_url"],
+                "sector_thumb_url": sector_data["sector_thumb_url"],
                 "area_name": area_name,
                 "area_url": area_url,
                 "batch_id": batch_id,
@@ -110,9 +128,19 @@ async def refresh_todo_list(username: str, client: httpx.AsyncClient):
 
 
 async def refresh_27crags():
+    # async with DB_27cache as db:
+    #     db.drop_tables()
     print("refreshing 27crags")
     async with httpx.AsyncClient() as client:
-        for username in ["jensda", "nicklasn", "jeppe_rosenkrands"]:
+        for username in [
+            "jensda",
+            "nicklasn",
+            "jeppe_rosenkrands",
+            "kristiana",
+            "ivanis",
+            "jacobthi",
+            "jonaspet",
+        ]:
             print(f"refreshing {username}")
             await refresh_todo_list(username=username, client=client)
             print(f"done with {username}")

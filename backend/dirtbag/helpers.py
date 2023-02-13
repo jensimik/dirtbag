@@ -1,4 +1,5 @@
 import json
+import pathlib
 from functools import lru_cache
 from itertools import cycle
 from aiotinydb import AIOTinyDB
@@ -12,3 +13,18 @@ DB_27cache = AIOTinyDB(settings.db_file_27cache)
 DB_users = AIOTinyDB(settings.db_file_users)
 DB_todos = AIOTinyDB(settings.db_file_todos)
 DB_sends = AIOTinyDB(settings.db_file_sends)
+
+MODULE_DIR = pathlib.Path(__file__).resolve().parent
+
+
+@lru_cache
+def get_crags():
+    with open(MODULE_DIR / "all_crags.json", "r") as f:
+        return {
+            crag["name"]: (float(crag["latitude"]), float(crag["longitude"]))
+            for crag in json.load(f)["crags"]
+        }
+
+
+def get_crag_location(sector_name):
+    return get_crags().get(sector_name, (None, None))
