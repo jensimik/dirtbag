@@ -13,56 +13,56 @@ router = APIRouter(tags=["trips"])
 async def create_data():
     async with (DB_trips as db_trips, DB_users as db_users):
         # users
-        db_users.drop_tables()
-        db_users.insert(
-            {
-                "name": "Jens Dav",
-                "user_id": "jensda",
-                "thumb_url": "https://27crags.s3.amazonaws.com/photos/000/298/298634/size_s-958682743ba1343d50bd2bd0ede8d6c8.jpg",
-            }
-        )
-        db_users.insert(
-            {
-                "name": "Jacob Thing",
-                "user_id": "jacobthi",
-                "thumb_url": "https://www.gravatar.com/avatar/287713e4f80168a1ae1a64222da1d67b?s=80&d=retro",
-            }
-        )
-        db_users.insert(
-            {
-                "name": "Nicklas Jefe",
-                "user_id": "nicklasn",
-                "thumb_url": "https://27crags.s3.amazonaws.com/photos/000/190/190723/size_s-8cec9165fea9.jpg",
-            }
-        )
-        db_users.insert(
-            {
-                "name": "Jeppe Böf",
-                "user_id": "jeppe_rosenkrands",
-                "thumb_url": "https://www.gravatar.com/avatar/9d554d599fecbcc27aef48e9627e47c8?s=80&d=retro",
-            }
-        )
-        db_users.insert(
-            {
-                "name": "Kristian Aagaard",
-                "user_id": "kristiana",
-                "thumb_url": "https://www.gravatar.com/avatar/20ba1e2c7606f4e2d3a05de57260fdb0?s=80&d=retro",
-            }
-        )
-        db_users.insert(
-            {
-                "name": "Ivan Ischenko",
-                "user_id": "ivanis",
-                "thumb_url": "https://www.gravatar.com/avatar/5caaa8a1b45e98a8cae778b2aefdc8b1?s=80&d=retro",
-            }
-        )
-        db_users.insert(
-            {
-                "name": "Jonas Holm",
-                "user_id": "jonaspet",
-                "thumb_url": "https://www.gravatar.com/avatar/f56ae650e54d03afb378267355d4701b?s=80&d=retro",
-            }
-        )
+        # db_users.drop_tables()
+        # db_users.insert(
+        #     {
+        #         "name": "Jens Dav",
+        #         "user_id": "jensda",
+        #         "thumb_url": "https://27crags.s3.amazonaws.com/photos/000/298/298634/size_s-958682743ba1343d50bd2bd0ede8d6c8.jpg",
+        #     }
+        # )
+        # db_users.insert(
+        #     {
+        #         "name": "Jacob Thing",
+        #         "user_id": "jacobthi",
+        #         "thumb_url": "https://www.gravatar.com/avatar/287713e4f80168a1ae1a64222da1d67b?s=80&d=retro",
+        #     }
+        # )
+        # db_users.insert(
+        #     {
+        #         "name": "Nicklas Jefe",
+        #         "user_id": "nicklasn",
+        #         "thumb_url": "https://27crags.s3.amazonaws.com/photos/000/190/190723/size_s-8cec9165fea9.jpg",
+        #     }
+        # )
+        # db_users.insert(
+        #     {
+        #         "name": "Jeppe Böf",
+        #         "user_id": "jeppe_rosenkrands",
+        #         "thumb_url": "https://www.gravatar.com/avatar/9d554d599fecbcc27aef48e9627e47c8?s=80&d=retro",
+        #     }
+        # )
+        # db_users.insert(
+        #     {
+        #         "name": "Kristian Aagaard",
+        #         "user_id": "kristiana",
+        #         "thumb_url": "https://www.gravatar.com/avatar/20ba1e2c7606f4e2d3a05de57260fdb0?s=80&d=retro",
+        #     }
+        # )
+        # db_users.insert(
+        #     {
+        #         "name": "Ivan Ischenko",
+        #         "user_id": "ivanis",
+        #         "thumb_url": "https://www.gravatar.com/avatar/5caaa8a1b45e98a8cae778b2aefdc8b1?s=80&d=retro",
+        #     }
+        # )
+        # db_users.insert(
+        #     {
+        #         "name": "Jonas Holm",
+        #         "user_id": "jonaspet",
+        #         "thumb_url": "https://www.gravatar.com/avatar/f56ae650e54d03afb378267355d4701b?s=80&d=retro",
+        #     }
+        # )
         # trip
         db_trips.drop_tables()
         db_trips.insert(
@@ -70,7 +70,9 @@ async def create_data():
                 "area_name": "Bohuslän",
                 "date_from": date(2023, 5, 15).isoformat(),
                 "date_to": date(2023, 5, 22).isoformat(),
-                "participants": ["jensda"],
+                "participants": [
+                    {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"}
+                ],
             }
         )
         db_trips.insert(
@@ -78,7 +80,24 @@ async def create_data():
                 "area_name": "Albarracin",
                 "date_from": date(2023, 3, 18).isoformat(),
                 "date_to": date(2023, 3, 25).isoformat(),
-                "participants": ["jensda", "jacobthi", "nicklasn", "jeppe_rosenkrands"],
+                "participants": [
+                    {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"},
+                    {
+                        "user_id": "jacobthi",
+                        "name": "Jacob Thing",
+                        "email": "jacob_thing@gmail.com",
+                    },
+                    {
+                        "user_id": "nicklasn",
+                        "name": "Nicklas Nielsen",
+                        "email": "nicklasnielsen91@gmail.com",
+                    },
+                    {
+                        "user_id": "jeppe_rosenkrands",
+                        "name": "Jeppe Jr.",
+                        "email": "jeppe_rosenkrands@gmail.com",
+                    },
+                ],
             }
         )
         db_trips.insert(
@@ -86,7 +105,9 @@ async def create_data():
                 "area_name": "Albarracin",
                 "date_from": date(2023, 3, 6).isoformat(),
                 "date_to": date(2023, 3, 30).isoformat(),
-                "participants": ["jensda"],
+                "participants": [
+                    {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"}
+                ],
             }
         )
         db_trips.insert(
@@ -95,24 +116,7 @@ async def create_data():
                 "date_from": date(2023, 4, 6).isoformat(),
                 "date_to": date(2023, 4, 13).isoformat(),
                 "participants": [
-                    "kristiana",
-                    "nicklasn",
-                    "jeppe_rosenkrands",
-                    "jacobthi",
-                    "jensda",
-                    "jonaspet",
-                    "ivanis",
-                ],
-            }
-        )
-        db_trips.insert(
-            {
-                "area_name": "Kjugekull",
-                "date_from": date(2023, 2, 17).isoformat(),
-                "date_to": date(2023, 2, 17).isoformat(),
-                "participants": [
-                    "kristiana",
-                    "ivanis",
+                    {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"},
                 ],
             }
         )
@@ -121,7 +125,9 @@ async def create_data():
                 "area_name": "Magic Wood",
                 "date_from": date(2023, 6, 19).isoformat(),
                 "date_to": date(2023, 6, 26).isoformat(),
-                "participants": ["jensda", "jonaspet"],
+                "participants": [
+                    {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"}
+                ],
             }
         )
 
@@ -147,7 +153,14 @@ async def trips() -> list[schemas.TripList]:
 
 
 @router.get("/trips/{trip_id}")
-async def trip(trip_id: int) -> schemas.Trip:
+async def trip_unauthed(trip_id):
+    async with DB_trips as db_trips:
+        trip = db_trips.get(doc_id=trip_id)
+    return schemas.TripList(id=trip.doc_id, **trip)
+
+
+@router.get("/trips/{trip_id}/{pin}")
+async def trip(trip_id: int, pin: str) -> schemas.Trip:
     async with (DB_trips as db_trips, DB_todos as db_todos, DB_users as db_users):
         trip = db_trips.get(doc_id=trip_id)
 

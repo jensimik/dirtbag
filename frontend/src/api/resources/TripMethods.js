@@ -24,4 +24,15 @@ export default {
             return response.json();
         }
     },
+    async get(trip_id, pin) {
+        const response = await fetch(APISettings.baseURL + '/trips/' + trip_id + '/' + pin, {
+            method: 'GET',
+            headers: APISettings.headers
+        });
+        if (response.status != 200) {
+            throw response.status;
+        } else {
+            return response.json();
+        }
+    },
 }

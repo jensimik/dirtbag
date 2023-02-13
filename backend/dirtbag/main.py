@@ -6,9 +6,7 @@ from .repeat_every_helper import repeat_every
 from .c27_fetcher import refresh_27crags
 from .config import settings
 from dirtbag import __version__
-from .routers import test, trips, users, weather
-
-# from .routers import calendar, problems, webp, misc
+from .routers import trips, users, weather
 
 
 if settings.sentry_dsn:
@@ -33,11 +31,9 @@ app.add_middleware(
 )
 app.mount("/static", StaticFiles(directory=settings.static_directory), name="static")
 
-app.include_router(test.router)
 app.include_router(trips.router)
 app.include_router(users.router)
 app.include_router(weather.router)
-# app.include_router(calendar.router)
 
 
 # @app.on_event("startup")

@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     db_file_todos: Path = "/data/todos.json"
     db_file_sends: Path = "/data/sends.json"
     sentry_dsn: str = None
+    httpx_user_agent: str = "dirtbag.gnerd.dk jens@gnerd.dk"
     tz: tzfile = gettz("Europe/Copenhagen")
 
     class Config:

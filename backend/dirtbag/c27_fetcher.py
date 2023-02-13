@@ -1,10 +1,14 @@
 import httpx
 import hashlib
+import random
 from urllib.parse import urlparse
+from aiolimiter import AsyncLimiter
 from requests_html import HTML
 from datetime import datetime
 from .helpers import DB_27cache, DB_todos, DB_users, where, tinydb_set
 from .config import settings
+
+rate_limit = AsyncLimiter(1, 15)
 
 
 def get_app_argument_from_html(html) -> str:
@@ -19,6 +23,8 @@ async def get_problem_data(problem_url: str, client: httpx.AsyncClient) -> str:
         data = db.get(where("problem_url") == problem_url)
     if data:
         return data["app_argument"]
+    # be gentle with 27crags
+    await rate_limit.acquire()
     r = await client.get(problem_url)
     if r.is_success:
         # to get big image and canvas markup i have to be logged in for premium sites
@@ -37,6 +43,8 @@ async def get_sector_data(sector_url: str, client: httpx.AsyncClient) -> dict:
         data = db.get(where("sector_url") == sector_url)
     if data:
         return data
+    # be gentle with 27crags
+    await rate_limit.acquire()
     # no cache result then fetch
     r = await client.get(sector_url)
     if r.is_success:
@@ -67,16 +75,10 @@ async def get_sector_data(sector_url: str, client: httpx.AsyncClient) -> dict:
 
 
 async def refresh_todo_list(username: str, client: httpx.AsyncClient):
-    # first get users profile photo
-    # r = await client.get(f"https://27crags.com/climbers/{username}")
-    # if r.is_success:
-    #     html = HTML(html=r.content)
-    #     img_url = html.find("meta[property='og:image']", first=True).attrs["content"]
-    #     async with DB_users as db:
-    #         db.update(tinydb_set("img_url", img_url), where("username") == username)
-
     # now get the todo list
     batch_id = datetime.utcnow().isoformat()
+    # be gentle with 27crags
+    await rate_limit.acquire()
     r = await client.get(f"https://27crags.com/climbers/{username}/ascents/todo")
     if r.is_success:
         print(f"got todo list of {username}")
@@ -137,20 +139,19 @@ async def refresh_todo_list(username: str, client: httpx.AsyncClient):
         db.remove((where("user_id") == username) & (where("batch_id") < batch_id))
 
 
-async def refresh_27crags():
+async def refresh_27crags(usernames):
     # async with DB_27cache as db:
     #     db.drop_tables()
     print("refreshing 27crags")
-    async with httpx.AsyncClient() as client:
-        for username in [
-            "jensda",
-            "nicklasn",
-            "jeppe_rosenkrands",
-            "kristiana",
-            "ivanis",
-            "jacobthi",
-            "jonaspet",
-        ]:
+    async with httpx.AsyncClient(
+        headers={"User-Agent": settings.httpx_user_agent}
+    ) as client:
+        if random.randint(0, 4) == 2:
+            r = client.get("https://27crags.com/robots.txt")
+            if r.is_success:
+                print("got robots.txt ok")
+                print(r.content)
+        for username in usernames:
             print(f"refreshing {username}")
             await refresh_todo_list(username=username, client=client)
             print(f"done with {username}")

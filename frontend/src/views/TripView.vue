@@ -52,15 +52,20 @@ const chartOptions = {
     responsive: true
 }
 
-const props = defineProps(['id'])
+const props = defineProps(['id', 'pin']);
 
 const trip = ref({});
 const participants = ref({});
-const trip_data = await TripMethodsAPI.get(props.id);
-trip_data.participants.forEach(participant => {
-    participants.value[participant.user_id] = participant;
-});
-trip.value = trip_data;
+const error = ref("");
+try {
+    const trip_data = await TripMethodsAPI.get(props.id, pin);
+    trip_data.participants.forEach(participant => {
+        participants.value[participant.user_id] = participant;
+    });
+    trip.value = trip_data;
+} catch (error) {
+    error.value = "failed to auth";
+}
 
 const chartData = ref({});
 const weatherData = await WeatherMethodsAPI.get(trip.value.sectors[0].name);
@@ -82,12 +87,11 @@ chartData.value = {
             yAxisID: "yPrecipitation"
         }
     ]
-
 }
 </script>
 
 <template>
-    <div>
+    <div v-if="!error">
         <h2>{{ trip.area_name }}</h2>
 
         <div class="flex one">
@@ -153,7 +157,9 @@ chartData.value = {
             </div>
         </div>
     </div>
-
+    <div v-else>
+        {{ error }}
+    </div>
 </template>
 
 <style scoped>
