@@ -3,7 +3,13 @@ from fastapi import APIRouter, Request, HTTPException, status
 from datetime import datetime, date
 from tinydb import where
 from dirtbag import schemas
-from dirtbag.helpers import DB_trips, DB_todos, DB_users, get_crag_location
+from dirtbag.helpers import (
+    DB_trips,
+    DB_todos,
+    DB_users,
+    get_crag_location,
+    parse_comments,
+)
 from dirtbag.config import settings
 
 router = APIRouter(tags=["trips"])
@@ -167,8 +173,11 @@ async def trip(trip_id: int) -> schemas.Trip:
             for k, g in itertools.groupby(data, key=lambda d: d["app_url"]):
                 lg = list(g)
                 user_ids = [i["user_id"] for i in lg]
-                comments = [i["comment"] for i in lg]
-                yield {**lg[0], "user_ids": user_ids, "comments": comments}
+                yield {
+                    **lg[0],
+                    "user_ids": user_ids,
+                    "comments": list(parse_comments(lg)),
+                }
 
         grouped_data = sorted(
             [d for d in grouper(data)], key=lambda d: d["sector_name"]

@@ -17,9 +17,15 @@ class BaseTodo(BaseModel):
     comment: str
 
 
+class Comment(BaseModel):
+    type: str
+    text: str
+    link: Optional[str]
+
+
 class TripTodo(BaseTodo):
     user_ids: list[str]
-    comments: list[str]
+    comments: list[Comment]
 
 
 class DBTodo(BaseTodo):

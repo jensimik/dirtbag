@@ -1,5 +1,6 @@
 import httpx
 import hashlib
+from urllib.parse import urlparse
 from requests_html import HTML
 from datetime import datetime
 from .helpers import DB_27cache, DB_todos, DB_users, where, tinydb_set
@@ -90,9 +91,13 @@ async def refresh_todo_list(username: str, client: httpx.AsyncClient):
             url = "https://27crags.com" + ass[1].attrs["href"]
             app_url = await get_problem_data(problem_url=url, client=client)
             name = ass[1].text
-            comment = ""
+            comment = []
             if ascent_details := tds[0].find("div.ascent-details", first=True):
-                comment = ascent_details.text
+                for link in ascent_details.find("a"):
+                    o = urlparse(link.attrs["href"])
+                    comment.append({"type": "link", "url": link, "text": o.hostname})
+                else:
+                    comment = [{"type": "text", "text": ascent_details.text}]
             sector_url = (
                 "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
             )

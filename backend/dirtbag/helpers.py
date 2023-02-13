@@ -28,3 +28,10 @@ def get_crags():
 
 def get_crag_location(sector_name):
     return get_crags().get(sector_name, (None, None))
+
+
+def parse_comments(todos: list[dict]):
+    for i in todos:
+        # if link in
+        # then yield for each link
+        yield {"type": "text", "text": i["comment"]}
