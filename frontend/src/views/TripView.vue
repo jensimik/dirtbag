@@ -121,6 +121,9 @@ chartData.value = {
                                 :title="participants[user_id].name" /></router-link>
                     </div>
                 </div>
+                <div v-if="todo.comment">
+                    <div>{{ todo.comment }}</div>
+                </div>
                 <div class="flex one" v-if="todo.name == 'Symbiose'">
                     <div class="off-abit">
                         <a href="https://bettybeta.com/bouldering/fontainebleau/95-2-ouest/symbiose">

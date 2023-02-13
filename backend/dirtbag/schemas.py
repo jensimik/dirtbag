@@ -14,6 +14,7 @@ class BaseTodo(BaseModel):
     sector_app_url: str
     area_name: str
     area_url: str
+    comment: str
 
 
 class TripTodo(BaseTodo):
