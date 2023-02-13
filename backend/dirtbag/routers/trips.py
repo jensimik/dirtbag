@@ -83,6 +83,14 @@ async def create_data():
         )
         db_trips.insert(
             {
+                "area_name": "Albarracin",
+                "date_from": date(2023, 3, 6).isoformat(),
+                "date_to": date(2023, 3, 30).isoformat(),
+                "participants": ["jensda"],
+            }
+        )
+        db_trips.insert(
+            {
                 "area_name": "Fontainebleau",
                 "date_from": date(2023, 4, 6).isoformat(),
                 "date_to": date(2023, 4, 13).isoformat(),
@@ -113,9 +121,7 @@ async def create_data():
                 "area_name": "Magic Wood",
                 "date_from": date(2023, 6, 19).isoformat(),
                 "date_to": date(2023, 6, 26).isoformat(),
-                "participants": [
-                    "jensda", "jonaspet"
-                ],
+                "participants": ["jensda", "jonaspet"],
             }
         )
 
@@ -149,7 +155,10 @@ async def trip(trip_id: int) -> schemas.Trip:
 
         # get all todos for the trip area
         data = sorted(
-            db_todos.search((where("area_name") == trip["area_name"]) & where("user_id").one_of(trip["participants"])),
+            db_todos.search(
+                (where("area_name") == trip["area_name"])
+                & where("user_id").one_of(trip["participants"])
+            ),
             key=lambda d: d["app_url"],
         )
 
