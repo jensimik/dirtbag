@@ -98,6 +98,11 @@ chartData.value = {
             </div>
         </div>
         <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
+        <div class="met_license">
+            <a href="https://www.met.no/en/free-meteorological-data/Licensing-and-crediting">forecast based on data from
+                MET
+                Norway</a>
+        </div>
         <div v-for="sector in trip.sectors" :key="sector.app_url">
             <h3><a :href="$isMobile() ? sector.app_url : sector.url">{{
                 sector.name
@@ -130,5 +135,10 @@ img.header {
 
 div.right {
     text-align: right;
+}
+
+div.met_license {
+    text-align: right;
+    font-size: 0.5em;
 }
 </style>
