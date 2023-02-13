@@ -3,13 +3,7 @@ from fastapi import APIRouter, Request, HTTPException, status
 from datetime import datetime, date
 from tinydb import where
 from dirtbag import schemas
-from dirtbag.helpers import (
-    DB_trips,
-    DB_todos,
-    DB_users,
-    get_crag_location,
-    parse_comments,
-)
+from dirtbag.helpers import DB_trips, DB_todos, DB_users, get_crag_location
 from dirtbag.config import settings
 
 router = APIRouter(tags=["trips"])
