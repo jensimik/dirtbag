@@ -90,6 +90,9 @@ async def refresh_todo_list(username: str, client: httpx.AsyncClient):
             url = "https://27crags.com" + ass[1].attrs["href"]
             app_url = await get_problem_data(problem_url=url, client=client)
             name = ass[1].text
+            comment = ""
+            if ascent_details := tds[0].find("div.ascent-details", first=True):
+                comment = ascent_details.text
             sector_url = (
                 "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
             )
@@ -116,6 +119,7 @@ async def refresh_todo_list(username: str, client: httpx.AsyncClient):
                 "sector_thumb_url": sector_data["sector_thumb_url"],
                 "area_name": area_name,
                 "area_url": area_url,
+                "comment": comment,
                 "batch_id": batch_id,
             }
             async with DB_todos as db:

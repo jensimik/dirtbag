@@ -109,21 +109,48 @@ chartData.value = {
             }}</a><a
                     :href="'https://maps.google.com/?q=@' + sector.location[0] + ',' + sector.location[1] + ',10z'">📍</a>
             </h3>
-            <div class="flex three" v-for="todo in sector.todos">
-                <div class="four-fifth"><a :href="$isMobile() ? todo.app_url : todo.url"><img class="thumb"
-                            :src="todo.thumb_url" />
-                        {{ todo.grade }} {{ todo.name }}</a></div>
-                <div class="fifth right">
-                    <router-link :to="{ name: 'user', params: { id: participants[user_id].id } }"
-                        v-for="user_id in todo.user_ids" :key="user_id"><img class="thumb"
-                            :src="participants[user_id].thumb_url" :title="participants[user_id].name" /></router-link>
+            <div v-for="todo in sector.todos">
+                <div class="flex three">
+                    <div class="four-fifth"><a :href="$isMobile() ? todo.app_url : todo.url"><img class="thumb"
+                                :src="todo.thumb_url" />
+                            {{ todo.grade }} {{ todo.name }}</a></div>
+                    <div class="fifth right">
+                        <router-link :to="{ name: 'user', params: { id: participants[user_id].id } }"
+                            v-for="user_id in todo.user_ids" :key="user_id"><img class="thumb"
+                                :src="participants[user_id].thumb_url"
+                                :title="participants[user_id].name" /></router-link>
+                    </div>
+                </div>
+                <div class="flex one" v-if="todo.name == 'Symbiose'">
+                    <div class="off-abit">
+                        <a href="https://bettybeta.com/bouldering/fontainebleau/95-2-ouest/symbiose">
+                            <svg class="youtube" viewBox="0 0 159 110" width="159" height="110"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="m154 17.5c-1.82-6.73-7.07-12-13.8-13.8-9.04-3.49-96.6-5.2-122 0.1-6.73 1.82-12 7.07-13.8 13.8-4.08 17.9-4.39 56.6 0.1 74.9 1.82 6.73 7.07 12 13.8 13.8 17.9 4.12 103 4.7 122 0 6.73-1.82 12-7.07 13.8-13.8 4.35-19.5 4.66-55.8-0.1-75z"
+                                    fill="#f00" />
+                                <path d="m105 55-40.8-23.4v46.8z" fill="#fff" />
+                            </svg>
+                            betty beta
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 </template>
 
 <style scoped>
+.off-abit {
+    margin-left: 2em;
+}
+
+svg.youtube {
+    height: 1em;
+    width: auto;
+}
+
 img.thumb {
     height: 1.5em;
     width: 1.5em;
