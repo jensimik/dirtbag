@@ -4,10 +4,10 @@ import WeatherMethodsAPI from '../api/resources/WeatherMethods';
 import { ref } from 'vue';
 
 import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LineElement, CategoryScale, TimeScale, LinearScale, PointElement } from 'chart.js'
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LineController, LineElement, CategoryScale, TimeScale, LinearScale, PointElement } from 'chart.js'
 import 'chartjs-adapter-luxon';
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, LineElement, PointElement, CategoryScale, TimeScale, LinearScale)
+ChartJS.register(Title, Tooltip, Legend, BarElement, LineController, LineElement, PointElement, CategoryScale, TimeScale, LinearScale)
 const chartOptions = {
     plugins: {
         legend: {
