@@ -110,6 +110,7 @@ async def refresh_todo_list(
             url = "https://27crags.com" + ass[1].attrs["href"]
             app_url = await get_problem_data(problem_url=url, client=client)
             name = ass[1].text
+            print(f"name = {name}")
             comment = []
             if ascent_details := tr.find("td.stxt > div.ascent-details", first=True):
                 for link in ascent_details.find("a"):
