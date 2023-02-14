@@ -74,7 +74,7 @@ async def create_data():
                 "date_to": date(2023, 5, 22).isoformat(),
                 "pin": "1337",
                 "participants": [
-                    {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"}
+                    {"user_id": "jensda", "name": "JD", "email": "jens@gnerd.dk"}
                 ],
             }
         )
@@ -85,20 +85,20 @@ async def create_data():
                 "date_to": date(2023, 3, 25).isoformat(),
                 "pin": "1337",
                 "participants": [
-                    {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"},
+                    {"user_id": "jensda", "name": "JD", "email": "jens@gnerd.dk"},
                     {
                         "user_id": "jacobthi",
-                        "name": "Jacob Thing",
+                        "name": "JT",
                         "email": "jacob_thing@gmail.com",
                     },
                     {
                         "user_id": "nicklasn",
-                        "name": "Nicklas Nielsen",
+                        "name": "NN",
                         "email": "nicklasnielsen91@gmail.com",
                     },
                     {
                         "user_id": "jeppe_rosenkrands",
-                        "name": "Jeppe Jr.",
+                        "name": "JR",
                         "email": "jeppe_rosenkrands@gmail.com",
                     },
                 ],
@@ -111,7 +111,7 @@ async def create_data():
                 "date_to": date(2023, 3, 30).isoformat(),
                 "pin": "1337",
                 "participants": [
-                    {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"}
+                    {"user_id": "jensda", "name": "JD", "email": "jens@gnerd.dk"}
                 ],
             }
         )
@@ -122,7 +122,7 @@ async def create_data():
                 "date_to": date(2023, 4, 13).isoformat(),
                 "pin": "1337",
                 "participants": [
-                    {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"},
+                    {"user_id": "jensda", "name": "JD", "email": "jens@gnerd.dk"},
                 ],
             }
         )
@@ -133,7 +133,7 @@ async def create_data():
                 "date_to": date(2023, 6, 26).isoformat(),
                 "pin": "1337",
                 "participants": [
-                    {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"}
+                    {"user_id": "jensda", "name": "JD", "email": "jens@gnerd.dk"}
                 ],
             }
         )

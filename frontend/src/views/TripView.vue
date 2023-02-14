@@ -60,9 +60,20 @@ const participants = ref({});
 const loading = ref(true);
 const error = ref(false);
 const chartData = ref({});
+const getUniqueColor = (n) => {
+    const rgb = [0, 0, 0];
+
+    for (let i = 0; i < 24; i++) {
+        rgb[i % 3] <<= 1;
+        rgb[i % 3] |= n & 0x01;
+        n >>= 1;
+    }
+    return '#' + rgb.reduce((a, c) => (c > 0x0f ? c.toString(16) : '0' + c.toString(16)) + a, '')
+}
 try {
     const trip_data = await TripMethodsAPI.get(props.id, props.pin);
-    trip_data.participants.forEach(participant => {
+    trip_data.participants.forEach((participant, i) => {
+        participant.background_color = getUniqueColor(i);
         participants.value[participant.user_id] = participant;
     });
     trip.value = trip_data;
@@ -101,12 +112,15 @@ try {
             <div class="right"><router-link :to="{ name: 'trip_edit', params: { id: props.id, pin: props.pin } }"
                     class="button right">edit</router-link></div>
         </div>
-        <div class="flex one">
+        <!-- <div class="flex one">
             <div class="flex grow">
-                <div v-for="user in trip.participants" :key="user.user_id"><img class="thumb" :src="user.thumb_url" />
-                    {{ user.name }}</div>
+                <div v-for="user in trip.participants" :key="user.user_id">
+                    <img class="thumb" :src="user.thumb_url" />
+                    <span class="tag">{{ user.name }}</span>
+
+                </div>
             </div>
-        </div>
+        </div> -->
         <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
         <div class="met_license">
             <a href="https://www.met.no/en/free-meteorological-data/Licensing-and-crediting">forecast based on data from
@@ -130,8 +144,15 @@ try {
                         }}</a>
                     </div>
                     <div class="participants">
-                        <img class="thumb" :src="participants[user_id].thumb_url" :title="participants[user_id].name"
-                            v-for="user_id in todo.user_ids" :key="user_id" />
+                        <span class="tag" :style="{
+                            backgroundColor: participants[user_id].background_color,
+                            color: participants[user_id].color
+                        }" v-for="user_id in todo.user_ids">{{
+    participants[user_id].name
+}}</span>
+
+                        <!-- <img class="thumb" :src="participants[user_id].thumb_url" :title="participants[user_id].name"
+                            v-for="user_id in todo.user_ids" :key="user_id" /> -->
                     </div>
                 </div>
                 <div class="flex grow tester2" v-if="todo.comment">
@@ -167,6 +188,17 @@ try {
 </template>
 
 <style scoped>
+span.tag {
+    background-color: #FF4136;
+    display: inline-block;
+    text-align: center;
+    padding: 0.3em;
+    font-size: 0.8em;
+    border-radius: 50%;
+    color: #fff;
+    /* padding: 0.5em; */
+}
+
 .right {
     text-align: right;
 }
