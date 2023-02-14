@@ -10,7 +10,7 @@ trips.value = await TripMethodsAPI.index();
 <template>
     <h2>Trips</h2>
     <div class="flex three" v-for=" trip in trips" :key="trip.id">
-        <div><router-link :to="{ name: 'trip', params: { id: trip.id } }">{{ trip.area_name }}</router-link></div>
+        <div><router-link :to="{ name: 'auth_trip', params: { id: trip.id } }">{{ trip.area_name }}</router-link></div>
         <div>{{ trip.date_from }} ({{ trip.duration ? trip.duration + ' days' : 'daytrip' }})</div>
         <div class="right">
             <img class="thumb" :src="user.thumb_url" :title="user.name" v-for="user in trip.participants"

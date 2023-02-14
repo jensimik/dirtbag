@@ -2,6 +2,7 @@
 import TripMethodsAPI from '../api/resources/TripMethods';
 import WeatherMethodsAPI from '../api/resources/WeatherMethods';
 import { ref } from 'vue';
+import router from '../router';
 
 import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LineController, LineElement, CategoryScale, TimeScale, LinearScale, PointElement } from 'chart.js'
@@ -56,49 +57,60 @@ const props = defineProps(['id', 'pin']);
 
 const trip = ref({});
 const participants = ref({});
-const error = ref("");
+const loading = ref(true);
+const error = ref(false);
+const chartData = ref({});
 try {
-    const trip_data = await TripMethodsAPI.get(props.id, pin);
+    const trip_data = await TripMethodsAPI.get(props.id, props.pin);
     trip_data.participants.forEach(participant => {
         participants.value[participant.user_id] = participant;
     });
     trip.value = trip_data;
-} catch (error) {
+    const weatherData = await WeatherMethodsAPI.get(trip.value.sectors[0].name);
+    chartData.value = {
+        "labels": weatherData.x,
+        "datasets": [
+            {
+                type: "line",
+                label: "temperature",
+                data: weatherData.temperature,
+                borderColor: "red",
+            },
+            {
+                type: "bar",
+                label: "precipitation",
+                data: weatherData.precipitation,
+                // borderColor: "blue",
+                backgroundColor: 'blue',
+                yAxisID: "yPrecipitation"
+            }
+        ]
+    }
+    loading.value = false;
+} catch (e) {
+    console.log(e);
     error.value = "failed to auth";
+    router.push({ name: 'auth_trip', params: { id: props.id } });
 }
-
-const chartData = ref({});
-const weatherData = await WeatherMethodsAPI.get(trip.value.sectors[0].name);
-chartData.value = {
-    "labels": weatherData.x,
-    "datasets": [
-        {
-            type: "line",
-            label: "temperature",
-            data: weatherData.temperature,
-            borderColor: "red",
-        },
-        {
-            type: "bar",
-            label: "precipitation",
-            data: weatherData.precipitation,
-            // borderColor: "blue",
-            backgroundColor: 'blue',
-            yAxisID: "yPrecipitation"
-        }
-    ]
+const resyncing = ref(false);
+const resync = async () => {
+    resyncing.value = true;
+    await TripMethodsAPI.resync(props.id, props.pin);
+    await new Promise(r => setTimeout(r, 10000));
+    resyncing.value = false;
 }
 </script>
 
 <template>
-    <div v-if="!error">
+    <div v-if="!loading">
         <h2>{{ trip.area_name }}</h2>
+        <button class="button" :disabled="resyncing" @click="resync">resync 27crags</button> <button
+            class="button">refresh</button> <button class="button">edit</button>
 
         <div class="flex one">
             <div class="flex grow">
-                <div v-for="user in trip.participants" :key="user.user_id"><router-link
-                        :to="{ name: 'user', params: { id: user.id } }"><img class="thumb" :src="user.thumb_url" />
-                        {{ user.name }}</router-link></div>
+                <div v-for="user in trip.participants" :key="user.user_id"><img class="thumb" :src="user.thumb_url" />
+                    {{ user.name }}</div>
             </div>
         </div>
         <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
@@ -124,10 +136,8 @@ chartData.value = {
                         }}</a>
                     </div>
                     <div class="participants">
-                        <router-link :to="{ name: 'user', params: { id: participants[user_id].id } }"
-                            v-for="user_id in todo.user_ids" :key="user_id"><img class="thumb"
-                                :src="participants[user_id].thumb_url"
-                                :title="participants[user_id].name" /></router-link>
+                        <img class="thumb" :src="participants[user_id].thumb_url" :title="participants[user_id].name"
+                            v-for="user_id in todo.user_ids" :key="user_id" />
                     </div>
                 </div>
                 <div class="flex grow tester2" v-if="todo.comment">
@@ -157,7 +167,7 @@ chartData.value = {
             </div>
         </div>
     </div>
-    <div v-else>
+    <div v-if="error">
         {{ error }}
     </div>
 </template>

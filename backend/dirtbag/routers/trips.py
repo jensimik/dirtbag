@@ -1,10 +1,11 @@
 import itertools
-from fastapi import APIRouter, Request, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 from datetime import datetime, date
 from tinydb import where
 from libgravatar import Gravatar
 from dirtbag import schemas
 from dirtbag.helpers import DB_trips, DB_todos, DB_users, get_crag_location
+from dirtbag.c27_fetcher import refresh_27crags
 from dirtbag.config import settings
 
 router = APIRouter(tags=["trips"])
@@ -71,6 +72,7 @@ async def create_data():
                 "area_name": "Bohuslän",
                 "date_from": date(2023, 5, 15).isoformat(),
                 "date_to": date(2023, 5, 22).isoformat(),
+                "pin": "1337",
                 "participants": [
                     {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"}
                 ],
@@ -81,6 +83,7 @@ async def create_data():
                 "area_name": "Albarracin",
                 "date_from": date(2023, 3, 18).isoformat(),
                 "date_to": date(2023, 3, 25).isoformat(),
+                "pin": "1337",
                 "participants": [
                     {"user_id": "jensda", "name": "Jens Dav", "email": "jens@gnerd.dk"},
                     {
@@ -144,8 +147,7 @@ async def trips() -> list[schemas.TripList]:
     for trip in data:
         participants = [
             schemas.User(
-                id=u.doc_id,
-                thumb_url=Gravatar(u["email"], default="retro").get_image(),
+                thumb_url=Gravatar(u["email"]).get_image(default="retro"),
                 **u,
             )
             for u in trip["participants"]
@@ -153,11 +155,8 @@ async def trips() -> list[schemas.TripList]:
         duration = (
             date.fromisoformat(trip["date_to"]) - date.fromisoformat(trip["date_from"])
         ).days
-        res.append(
-            schemas.TripList(
-                id=trip.doc_id, participants=participants, duration=duration, **trip
-            )
-        )
+        trip["participants"] = participants
+        res.append(schemas.TripList(id=trip.doc_id, duration=duration, **trip))
     return res
 
 
@@ -165,7 +164,30 @@ async def trips() -> list[schemas.TripList]:
 async def trip_unauthed(trip_id):
     async with DB_trips as db_trips:
         trip = db_trips.get(doc_id=trip_id)
-    return schemas.TripList(id=trip.doc_id, **trip)
+        participants = [
+            schemas.User(
+                thumb_url=Gravatar(u["email"]).get_image(default="retro"),
+                **u,
+            )
+            for u in trip["participants"]
+        ]
+        trip["participants"] = participants
+        duration = (
+            date.fromisoformat(trip["date_to"]) - date.fromisoformat(trip["date_from"])
+        ).days
+    return schemas.TripList(id=trip.doc_id, duration=duration, **trip)
+
+
+@router.post("/trips/{trip_id}/{pin}/resync")
+async def trip_resync(trip_id: int, pin: str, background_tasks: BackgroundTasks):
+    async with DB_trips as db_trips:
+        trip = db_trips.get(doc_id=trip_id)
+    if trip["pin"] != pin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+    background_tasks.add_task(
+        refresh_27crags, usernames=[u["user_id"] for u in trip["participants"]]
+    )
+    return {"status": "OK"}
 
 
 @router.get("/trips/{trip_id}/{pin}")
@@ -179,7 +201,7 @@ async def trip(trip_id: int, pin: str) -> schemas.Trip:
         data = sorted(
             db_todos.search(
                 (where("area_name") == trip["area_name"])
-                & where("user_id").one_of(trip["participants"])
+                & where("user_id").one_of([u["user_id"] for u in trip["participants"]])
             ),
             key=lambda d: d["app_url"],
         )
@@ -213,8 +235,7 @@ async def trip(trip_id: int, pin: str) -> schemas.Trip:
             date_to=trip["date_to"],
             participants=[
                 schemas.User(
-                    id=u.doc_id,
-                    thumb_url=Gravatar(u["email"], default="retro").get_image(),
+                    thumb_url=Gravatar(u["email"]).get_image(default="retro"),
                     **u,
                 )
                 for u in trip["participants"]

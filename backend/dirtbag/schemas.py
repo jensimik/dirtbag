@@ -43,7 +43,6 @@ class Sector(BaseModel):
 
 
 class User(BaseModel):
-    id: int
     user_id: str
     name: str
     thumb_url: str

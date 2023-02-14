@@ -10,8 +10,8 @@ const router = createRouter({
             component: HomeView
         },
         {
-            path: '/trip/:id',
-            name: 'trip',
+            path: '/auth/:id',
+            name: 'auth_trip',
             component: () => import('../views/TripAuth.vue'),
             props: true,
         },
@@ -19,6 +19,12 @@ const router = createRouter({
             path: '/trip/:id/:pin',
             name: 'trip_auth',
             component: () => import('../views/TripView.vue'),
+            props: true,
+        },
+        {
+            path: '/trip/:id/:pin/edit',
+            name: 'trip_edit',
+            component: () => import('../views/TripEdit.vue'),
             props: true,
         },
         {

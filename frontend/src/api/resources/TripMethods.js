@@ -13,7 +13,7 @@ export default {
             return response.json();
         }
     },
-    async get(trip_id) {
+    async get_no_auth(trip_id) {
         const response = await fetch(APISettings.baseURL + '/trips/' + trip_id, {
             method: 'GET',
             headers: APISettings.headers
@@ -27,6 +27,17 @@ export default {
     async get(trip_id, pin) {
         const response = await fetch(APISettings.baseURL + '/trips/' + trip_id + '/' + pin, {
             method: 'GET',
+            headers: APISettings.headers
+        });
+        if (response.status != 200) {
+            throw response.status;
+        } else {
+            return response.json();
+        }
+    },
+    async resync(trip_id, pin) {
+        const response = await fetch(APISettings.baseURL + '/trips/' + trip_id + '/' + pin + '/resync', {
+            method: 'POST',
             headers: APISettings.headers
         });
         if (response.status != 200) {
