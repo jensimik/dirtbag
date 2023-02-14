@@ -187,7 +187,8 @@ span.tag {
     font-size: 0.8em;
     border-radius: 50%;
     color: #fff;
-    /* padding: 0.5em; */
+    /* overlap a bit */
+    margin-left: -0.5em;
 }
 
 .right {
