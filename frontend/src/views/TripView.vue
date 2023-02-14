@@ -3,7 +3,7 @@ import TripMethodsAPI from '../api/resources/TripMethods';
 import WeatherMethodsAPI from '../api/resources/WeatherMethods';
 import { ref } from 'vue';
 import router from '../router';
-import { boundingExtent, getCenter } from 'ol/extent';
+import { boundingExtent, getCenter, buffer } from 'ol/extent';
 
 
 import { Bar } from 'vue-chartjs'
@@ -108,7 +108,7 @@ try {
 
 // map settings
 const locations = trip.value.sectors.map(sector => [sector.location[1], sector.location[0]]);
-const map_extent = boundingExtent(locations);
+const map_extent = buffer(boundingExtent(locations), 0.05);
 const center = ref(getCenter(map_extent));
 const projection = ref("EPSG:4326");
 const zoom = ref(10);
