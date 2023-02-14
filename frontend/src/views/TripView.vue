@@ -155,7 +155,7 @@ try {
                             v-for="user_id in todo.user_ids" :key="user_id" /> -->
                     </div>
                 </div>
-                <div class="flex grow tester2" v-if="todo.comment">
+                <div class="flex grow tester2" v-if="todo.comments.length > 0">
                     <div class="thumb"></div>
                     <div class="comment"><span class="comment" v-for="comment in todo.comments"><a :href="comment.url"
                                 v-if="comment.type == 'link'">
@@ -210,6 +210,7 @@ div.tester {
 div.tester2 {
     margin-top: -1.5em;
     justify-content: stretch;
+    margin-bottom: -0.5em;
 }
 
 div.thumb {
