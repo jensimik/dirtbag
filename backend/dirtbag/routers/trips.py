@@ -220,7 +220,10 @@ async def trip(trip_id: int, pin: str) -> schemas.Trip:
                     app_url=v[0]["sector_app_url"],
                     thumb_url=v[0]["sector_thumb_url"],
                     location=get_crag_location(v[0]["sector_name"]),
-                    todos=[schemas.TripTodo(**todo) for todo in v],
+                    todos=[
+                        schemas.TripTodo(**todo)
+                        for todo in sorted(v, key=lambda d: d["grade"])
+                    ],
                 )
                 for k, v in sectors_dict.items()
             ],
