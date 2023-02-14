@@ -141,9 +141,6 @@ try {
                         }" v-for="user_id in todo.user_ids">{{
     participants[user_id].name
 }}</span>
-
-                        <!-- <img class="thumb" :src="participants[user_id].thumb_url" :title="participants[user_id].name"
-                            v-for="user_id in todo.user_ids" :key="user_id" /> -->
                     </div>
                 </div>
                 <div class="flex grow comment_line" v-if="todo.comments.length > 0">
@@ -161,15 +158,9 @@ try {
                                 <span v-else>{{ comment.text }}</span>
                             </a>
                             <span v-else>{{ comment.text }}</span>
-                            &MediumSpace;</span></div>
-                </div>
-                <!-- <div class="flex one" v-if="todo.name == 'Symbiose'">
-                    <div class="off-abit">
-                        <a href="https://bettybeta.com/bouldering/fontainebleau/95-2-ouest/symbiose">
-                            betty beta
-                        </a>
+                            &MediumSpace;</span>
                     </div>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>

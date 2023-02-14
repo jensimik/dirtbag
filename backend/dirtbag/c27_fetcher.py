@@ -106,12 +106,12 @@ async def refresh_todo_list(
             grade = tr.find("td.grade", first=True).text
             img_element = tr.find("img", first=True)
             thumb_url = img_element.attrs["src"] if img_element else ""
-            ass = tds[0].find("a")
+            ass = tr.find("td.stxt > a")
             url = "https://27crags.com" + ass[1].attrs["href"]
             app_url = await get_problem_data(problem_url=url, client=client)
             name = ass[1].text
             comment = []
-            if ascent_details := tds[0].find("div.ascent-details", first=True):
+            if ascent_details := tr.find("td.stxt > div.ascent-details", first=True):
                 for link in ascent_details.find("a"):
                     url = link.attrs["href"]
                     o = urlparse(url)
