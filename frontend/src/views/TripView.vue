@@ -134,7 +134,7 @@ try {
                     :href="'https://maps.google.com/?q=@' + sector.location[0] + ',' + sector.location[1] + ',10z'">📍</a>
             </h3>
             <div v-for="todo in sector.todos">
-                <div class="flex grow tester">
+                <div class="flex grow todo_line">
                     <div class="thumb">
                         <a :href="$isMobile() ? todo.app_url : todo.url"><img class="thumb" :src="todo.thumb_url" /></a>
                     </div>
@@ -155,7 +155,7 @@ try {
                             v-for="user_id in todo.user_ids" :key="user_id" /> -->
                     </div>
                 </div>
-                <div class="flex grow tester2" v-if="todo.comments.length > 0">
+                <div class="flex grow comment_line" v-if="todo.comments.length > 0">
                     <div class="thumb"></div>
                     <div class="comment"><span class="comment" v-for="comment in todo.comments"><a :href="comment.url"
                                 v-if="comment.type == 'link'">
@@ -203,11 +203,13 @@ span.tag {
     text-align: right;
 }
 
-div.tester {
+div.todo_line {
     justify-content: stretch;
+    margin-bottom: -0.4em;
+    margin-top: -0.4em;
 }
 
-div.tester2 {
+div.comment_line {
     margin-top: -1.5em;
     justify-content: stretch;
     margin-bottom: -0.5em;
