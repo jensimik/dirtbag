@@ -28,3 +28,14 @@ def get_crags():
 
 def get_crag_location(sector_name):
     return get_crags().get(sector_name, (None, None))
+
+
+class reversor:
+    def __init__(self, obj):
+        self.obj = obj
+
+    def __eq__(self, other):
+        return other.obj == self.obj
+
+    def __lt__(self, other):
+        return other.obj < self.obj

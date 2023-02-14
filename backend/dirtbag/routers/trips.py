@@ -4,7 +4,7 @@ from datetime import datetime, date
 from tinydb import where
 from libgravatar import Gravatar
 from dirtbag import schemas
-from dirtbag.helpers import DB_trips, DB_todos, DB_users, get_crag_location
+from dirtbag.helpers import DB_trips, DB_todos, DB_users, reversor, get_crag_location
 from dirtbag.c27_fetcher import refresh_27crags
 from dirtbag.config import settings
 
@@ -222,7 +222,9 @@ async def trip(trip_id: int, pin: str) -> schemas.Trip:
                     location=get_crag_location(v[0]["sector_name"]),
                     todos=[
                         schemas.TripTodo(**todo)
-                        for todo in sorted(v, key=lambda d: d["grade"], reverse=True)
+                        for todo in sorted(
+                            v, key=lambda d: (reversor(d["grade"]), d["name"])
+                        )
                     ],
                 )
                 for k, v in sectors_dict.items()
