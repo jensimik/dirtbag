@@ -92,21 +92,15 @@ try {
     error.value = "failed to auth";
     router.push({ name: 'auth_trip', params: { id: props.id } });
 }
-const resyncing = ref(false);
-const resync = async () => {
-    resyncing.value = true;
-    await TripMethodsAPI.resync(props.id, props.pin);
-    await new Promise(r => setTimeout(r, 10000));
-    resyncing.value = false;
-}
 </script>
 
 <template>
     <div v-if="!loading">
-        <h2>{{ trip.area_name }}</h2>
-        <button class="button" :disabled="resyncing" @click="resync">resync 27crags</button> <button
-            class="button">refresh</button> <button class="button">edit</button>
-
+        <div class="flex two">
+            <h2>{{ trip.area_name }}</h2>
+            <div class="right"><router-link :to="{ name: 'trip_edit', params: { id: props.id, pin: props.pin } }"
+                    class="button right">edit</router-link></div>
+        </div>
         <div class="flex one">
             <div class="flex grow">
                 <div v-for="user in trip.participants" :key="user.user_id"><img class="thumb" :src="user.thumb_url" />
@@ -173,6 +167,10 @@ const resync = async () => {
 </template>
 
 <style scoped>
+.right {
+    text-align: right;
+}
+
 div.tester {
     justify-content: stretch;
 }
