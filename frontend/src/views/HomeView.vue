@@ -19,7 +19,7 @@ trips.value = await TripMethodsAPI.index();
 
 <template>
     <div class="flex two">
-        <h2>Trips</h2>
+        <h2>👜 Dirtbag trips</h2>
         <div class="right"><router-link :to="{ name: 'trip_add' }" class="button">create</router-link></div>
     </div>
     <div class="flex three" v-for=" trip in trips" :key="trip.id">
