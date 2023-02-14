@@ -112,15 +112,6 @@ try {
             <div class="right"><router-link :to="{ name: 'trip_edit', params: { id: props.id, pin: props.pin } }"
                     class="button right">edit</router-link></div>
         </div>
-        <!-- <div class="flex one">
-            <div class="flex grow">
-                <div v-for="user in trip.participants" :key="user.user_id">
-                    <img class="thumb" :src="user.thumb_url" />
-                    <span class="tag">{{ user.name }}</span>
-
-                </div>
-            </div>
-        </div> -->
         <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
         <div class="met_license">
             <a href="https://www.met.no/en/free-meteorological-data/Licensing-and-crediting">forecast based on data from

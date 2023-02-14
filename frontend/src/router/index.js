@@ -10,6 +10,11 @@ const router = createRouter({
             component: HomeView
         },
         {
+            path: '/add',
+            name: 'trip_add',
+            component: () => import('../views/TripAdd.vue'),
+        },
+        {
             path: '/auth/:id',
             name: 'auth_trip',
             component: () => import('../views/TripAuth.vue'),

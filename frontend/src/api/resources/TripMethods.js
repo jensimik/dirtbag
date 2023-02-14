@@ -35,6 +35,18 @@ export default {
             return response.json();
         }
     },
+    async update(trip_id, pin, participants) {
+        const response = await fetch(APISettings.baseURL + '/trips/' + trip_id + '/' + pin + '/update', {
+            method: 'POST',
+            headers: { ...APISettings.headers, 'Content-Type': 'Application/json' },
+            body: JSON.stringify(participants)
+        });
+        if (response.status != 200) {
+            throw response.status;
+        } else {
+            return response.json();
+        }
+    },
     async resync(trip_id, pin) {
         const response = await fetch(APISettings.baseURL + '/trips/' + trip_id + '/' + pin + '/resync', {
             method: 'POST',

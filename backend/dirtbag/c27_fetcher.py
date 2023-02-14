@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from aiolimiter import AsyncLimiter
 from requests_html import HTML
 from datetime import datetime
-from .helpers import DB_27cache, DB_todos, DB_users, where, tinydb_set
+from .helpers import DB_27cache, DB_todos, DB_users, DB_trips, where, tinydb_set
 from .config import settings
 
 rate_limit = AsyncLimiter(1, 15)
@@ -74,7 +74,15 @@ async def get_sector_data(sector_url: str, client: httpx.AsyncClient) -> dict:
     raise Exception(f"Sector not found {sector_url}")
 
 
-async def refresh_todo_list(username: str, client: httpx.AsyncClient):
+async def refresh_todo_list(
+    username: str, client: httpx.AsyncClient, trip_id: int = None
+):
+    async with DB_27cache as db:
+        db.upsert(
+            {"user_id_lock": username, "locked": True},
+            where("user_id_lock") == username,
+        )
+
     # now get the todo list
     batch_id = datetime.utcnow().isoformat()
     # be gentle with 27crags
@@ -83,6 +91,15 @@ async def refresh_todo_list(username: str, client: httpx.AsyncClient):
     if r.is_success:
         print(f"got todo list of {username}")
         html = HTML(html=r.content)
+        climber_name = html.find("div.climber-name", first=True).text
+        if trip_id:
+            climber_initials = climber_name.split()[0][0] + climber_name.split()[-1][0]
+            async with DB_trips as db_trips:
+                trip = db_trips.get(doc_id=trip_id)
+                for u in trip["participants"]:
+                    if u["user_id"] == username:
+                        u["name"] = climber_initials
+                db_trips.upsert(trip)
         todo_list = html.find("table.todo-list tbody", first=True)
         for tr in todo_list.find("tr"):
             tds = tr.find("td.stxt")
@@ -137,9 +154,15 @@ async def refresh_todo_list(username: str, client: httpx.AsyncClient):
     # clear out those not updated in the batch
     async with DB_todos as db:
         db.remove((where("user_id") == username) & (where("batch_id") < batch_id))
+    # clear simple sync lock
+    async with DB_27cache as db:
+        db.upsert(
+            {"user_id_lock": username, "locked": False},
+            where("user_id_lock") == username,
+        )
 
 
-async def refresh_27crags(usernames):
+async def refresh_27crags(usernames: list[str], trip_id: int = None):
     # async with DB_27cache as db:
     #     db.drop_tables()
     print("refreshing 27crags")
@@ -147,11 +170,11 @@ async def refresh_27crags(usernames):
         headers={"User-Agent": settings.httpx_user_agent}
     ) as client:
         if random.randint(0, 4) == 2:
-            r = client.get("https://27crags.com/robots.txt")
+            r = await client.get("https://27crags.com/robots.txt")
             if r.is_success:
                 print("got robots.txt ok")
                 print(r.content)
         for username in usernames:
             print(f"refreshing {username}")
-            await refresh_todo_list(username=username, client=client)
+            await refresh_todo_list(username=username, client=client, trip_id=trip_id)
             print(f"done with {username}")

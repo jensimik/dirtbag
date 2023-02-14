@@ -44,8 +44,7 @@ class Sector(BaseModel):
 
 class User(BaseModel):
     user_id: str
-    name: str
-    thumb_url: str
+    name: Optional[str]
 
 
 class Trip(BaseModel):
@@ -61,6 +60,12 @@ class TripList(BaseModel):
     id: int
     area_name: str
     date_from: date
+    date_from_display: str
     date_to: date
+    date_to_display: str
     duration: int
     participants: list[User]
+
+
+class TripUpdate(BaseModel):
+    participants: str
