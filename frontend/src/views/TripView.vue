@@ -3,6 +3,8 @@ import TripMethodsAPI from '../api/resources/TripMethods';
 import WeatherMethodsAPI from '../api/resources/WeatherMethods';
 import { ref } from 'vue';
 import router from '../router';
+import { boundingExtent, getCenter } from 'ol/extent';
+
 
 import { Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LineController, LineElement, CategoryScale, TimeScale, LinearScale, PointElement } from 'chart.js'
@@ -103,6 +105,20 @@ try {
     error.value = "failed to auth";
     router.push({ name: 'auth_trip', params: { id: props.id } });
 }
+
+// map settings
+const locations = trip.value.sectors.map(sector => [sector.location[1], sector.location[0]]);
+const map_extent = boundingExtent(locations);
+const center = ref(getCenter(map_extent));
+const projection = ref("EPSG:4326");
+const zoom = ref(10);
+const rotation = ref(0);
+
+const zoomChanged = async (currentZoom) => {
+    zoom.value = currentZoom;
+}
+
+
 </script>
 
 <template>
@@ -117,6 +133,24 @@ try {
             <a href="https://www.met.no/en/free-meteorological-data/Licensing-and-crediting">forecast based on data from
                 MET
                 Norway</a>
+        </div>
+        <div>
+            <ol-map style="height:400px">
+                <ol-view ref="view" :center="center" :extent="map_extent" :projection="projection" />
+
+                <ol-attribution-control />
+                <ol-scaleline-control />
+                <ol-zoom-control />
+                <ol-zoomtoextent-control :extent="map_extent" tipLabel="Fit to Area" />
+                <ol-tile-layer>
+                    <ol-source-osm />
+                </ol-tile-layer>
+                <ol-overlay :position="[sector.location[1], sector.location[0]]" v-for="sector in trip.sectors">
+                    <template v-slot="slotProps">
+                        <div class="marker">📍 {{ sector.name }}</div>
+                    </template>
+                </ol-overlay>
+            </ol-map>
         </div>
         <div v-for="sector in trip.sectors" :key="sector.app_url">
             <h3><a :href="$isMobile() ? sector.app_url : sector.url">{{
@@ -170,6 +204,10 @@ try {
 </template>
 
 <style scoped>
+.marker {
+    font-size: 0.5em;
+}
+
 span.tag {
     background-color: #FF4136;
     display: inline-block;
