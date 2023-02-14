@@ -26,10 +26,12 @@ def get_crags():
         }
 
 
+# get location by sector name
 def get_crag_location(sector_name):
     return get_crags().get(sector_name, (None, None))
 
 
+# to sort things in reverse order
 class reversor:
     def __init__(self, obj):
         self.obj = obj

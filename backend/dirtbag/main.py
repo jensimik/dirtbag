@@ -2,8 +2,7 @@ import sentry_sdk
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from .repeat_every_helper import repeat_every
-from .c27_fetcher import refresh_27crags
+from dirtbag.repeat_every_helper import repeat_every
 from .config import settings
 from dirtbag import __version__
 from .routers import trips, users, weather
@@ -36,7 +35,8 @@ app.include_router(users.router)
 app.include_router(weather.router)
 
 
-# @app.on_event("startup")
-# @repeat_every(seconds=60 * 60)
-async def _refresh_27crags():
-    await refresh_27crags()
+@app.on_event("startup")
+@repeat_every(seconds=60 * 60 * 24)
+async def _maintenance():
+    # todo clear out old trips automatic after trip is done?
+    print("doing maintenance stuff")

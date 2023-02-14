@@ -118,7 +118,18 @@ const zoomChanged = async (currentZoom) => {
     zoom.value = currentZoom;
 }
 
-
+const view = ref(null);
+const trackingOptions = {
+    enableHighAccuracy: true,
+    timeout: 0xFFFFFFFF,
+    maximumAge: 1000 * 60,
+}
+const geoLocChange = (loc) => {
+    console.log(loc);
+    view.value.fit([loc[0], loc[1], loc[0], loc[1]], {
+        maxZoom: 14
+    })
+}
 </script>
 
 <template>
@@ -136,7 +147,7 @@ const zoomChanged = async (currentZoom) => {
         </div>
         <div>
             <ol-map style="height:400px">
-                <ol-view ref="view" :center="center" :extent="map_extent" :projection="projection" />
+                <ol-view ref="view" :center="center" :projection="projection" />
 
                 <ol-attribution-control />
                 <ol-scaleline-control />
@@ -150,6 +161,22 @@ const zoomChanged = async (currentZoom) => {
                         <div class="marker">📍 {{ sector.name }}</div>
                     </template>
                 </ol-overlay>
+                <ol-geolocation :projection="projection" :tracking-options="trackingOptions"
+                    @positionChanged="geoLocChange">
+                    <template v-slot="slotProps">
+                        <ol-vector-layer :zIndex="2">
+                            <ol-source-vector>
+                                <ol-feature ref="positionFeature">
+                                    <ol-geom-point :coordinates="slotProps.position"></ol-geom-point>
+                                    <ol-style>
+                                        <ol-style-icon src="/monkey.svg" :scale="0.1"></ol-style-icon>
+                                    </ol-style>
+                                </ol-feature>
+                            </ol-source-vector>
+
+                        </ol-vector-layer>
+                    </template>
+                </ol-geolocation>
             </ol-map>
         </div>
         <div v-for="sector in trip.sectors" :key="sector.app_url">
