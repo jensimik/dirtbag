@@ -121,9 +121,9 @@ const zoomChanged = async (currentZoom) => {
 const view = ref(null);
 const geoLocChange = (loc) => {
     console.log(loc);
-    view.value.fit([loc[0], loc[1], loc[0], loc[1]], {
-        maxZoom: 14
-    })
+    // view.value.fit([loc[0], loc[1], loc[0], loc[1]], {
+    //     maxZoom: 14
+    // })
 }
 const getRndInteger = (min, max) => {
     return Math.floor(Math.random() * (max - min)) + min;
