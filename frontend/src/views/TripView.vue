@@ -274,8 +274,8 @@ div.thumb {
 }
 
 img.expand {
-    width: 5em !important;
-    height: 5em !important;
+    width: 6em !important;
+    height: 6em !important;
 
 }
 
