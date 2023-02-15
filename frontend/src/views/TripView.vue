@@ -126,9 +126,12 @@ const trackingOptions = {
 }
 const geoLocChange = (loc) => {
     console.log(loc);
-    view.value.fit([loc[0], loc[1], loc[0], loc[1]], {
-        maxZoom: 14
-    })
+    // view.value.fit([loc[0], loc[1], loc[0], loc[1]], {
+    //     maxZoom: 14
+    // })
+}
+const getRndInteger = (min, max) => {
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 </script>
 
@@ -139,15 +142,18 @@ const geoLocChange = (loc) => {
             <div class="right"><router-link :to="{ name: 'trip_edit', params: { id: props.id, pin: props.pin } }"
                     class="button right">edit</router-link></div>
         </div>
-        <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
-        <div class="met_license">
-            <a href="https://www.met.no/en/free-meteorological-data/Licensing-and-crediting">forecast based on data from
-                MET
-                Norway</a>
+        <div v-if="false">
+            <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
+            <div class="met_license">
+                <a href="https://www.met.no/en/free-meteorological-data/Licensing-and-crediting">forecast based on data
+                    from
+                    MET
+                    Norway</a>
+            </div>
         </div>
         <div>
             <ol-map style="height:400px">
-                <ol-view ref="view" :center="center" :projection="projection" />
+                <ol-view ref="view" :center="center" :extent="map_extent" :projection="projection" />
 
                 <ol-attribution-control />
                 <ol-scaleline-control />
@@ -156,9 +162,10 @@ const geoLocChange = (loc) => {
                 <ol-tile-layer>
                     <ol-source-osm />
                 </ol-tile-layer>
-                <ol-overlay :position="[sector.location[1], sector.location[0]]" v-for="sector in trip.sectors">
-                    <template v-slot="slotProps">
-                        <div class="marker">📍 {{ sector.name }}</div>
+                <ol-overlay :position="[sector.location[1], sector.location[0]]" v-for="(sector, i) in trip.sectors">
+                    <template v-slot="slotProps" id="test">
+                        <div class="marker" :style="{ transform: 'rotate(' + getRndInteger(-90, 90) + 'deg)' }">
+                            📍 {{ sector.name }}</div>
                     </template>
                 </ol-overlay>
                 <ol-geolocation :projection="projection" :tracking-options="trackingOptions"
@@ -232,7 +239,8 @@ const geoLocChange = (loc) => {
 
 <style scoped>
 .marker {
-    font-size: 0.5em;
+    font-size: 0.6em;
+    transform-origin: top left;
 }
 
 span.tag {
