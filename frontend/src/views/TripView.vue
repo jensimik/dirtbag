@@ -119,16 +119,11 @@ const zoomChanged = async (currentZoom) => {
 }
 
 const view = ref(null);
-const trackingOptions = {
-    enableHighAccuracy: true,
-    timeout: 0xFFFFFFFF,
-    maximumAge: 1000 * 60,
-}
 const geoLocChange = (loc) => {
     console.log(loc);
-    // view.value.fit([loc[0], loc[1], loc[0], loc[1]], {
-    //     maxZoom: 14
-    // })
+    view.value.fit([loc[0], loc[1], loc[0], loc[1]], {
+        maxZoom: 14
+    })
 }
 const getRndInteger = (min, max) => {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -153,7 +148,7 @@ const getRndInteger = (min, max) => {
         </div>
         <div>
             <ol-map style="height:400px">
-                <ol-view ref="view" :center="center" :extent="map_extent" :projection="projection" />
+                <ol-view ref="view" :center="center" :projection="projection" />
 
                 <ol-attribution-control />
                 <ol-scaleline-control />
@@ -162,21 +157,22 @@ const getRndInteger = (min, max) => {
                 <ol-tile-layer>
                     <ol-source-osm />
                 </ol-tile-layer>
-                <ol-overlay :position="[sector.location[1], sector.location[0]]" v-for="(sector, i) in trip.sectors">
+                <ol-overlay :stopEvent="false" :position="[sector.location[1], sector.location[0]]"
+                    v-for="(sector, i) in trip.sectors">
                     <template v-slot="slotProps" id="test">
                         <div class="marker" :style="{ transform: 'rotate(' + getRndInteger(-90, 90) + 'deg)' }">
                             📍 {{ sector.name }}</div>
                     </template>
                 </ol-overlay>
-                <ol-geolocation :projection="projection" :tracking-options="trackingOptions"
-                    @positionChanged="geoLocChange">
+                <ol-geolocation :projection="projection" @positionChanged="geoLocChange">
                     <template v-slot="slotProps">
                         <ol-vector-layer :zIndex="2">
                             <ol-source-vector>
                                 <ol-feature ref="positionFeature">
                                     <ol-geom-point :coordinates="slotProps.position"></ol-geom-point>
                                     <ol-style>
-                                        <ol-style-icon src="/monkey.svg" :scale="0.1"></ol-style-icon>
+                                        <ol-style-icon src="https://dirtbag.gnerd.dk/apple-touch-icon.png"
+                                            :scale="0.25"></ol-style-icon>
                                     </ol-style>
                                 </ol-feature>
                             </ol-source-vector>
@@ -241,6 +237,7 @@ const getRndInteger = (min, max) => {
 .marker {
     font-size: 0.6em;
     transform-origin: top left;
+    z-index: -2;
 }
 
 span.tag {
