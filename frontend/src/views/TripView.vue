@@ -148,7 +148,7 @@ const getRndInteger = (min, max) => {
         </div>
         <div>
             <ol-map style="height:400px">
-                <ol-view ref="view" :center="center" :projection="projection" />
+                <ol-view ref="view" :center="center" :extent="map_extent" :projection="projection" />
 
                 <ol-attribution-control />
                 <ol-scaleline-control />
