@@ -191,7 +191,7 @@ const getRndInteger = (min, max) => {
             <div v-for="todo in sector.todos">
                 <div class="flex grow todo_line">
                     <div class="thumb">
-                        <a :href="$isMobile() ? todo.app_url : todo.url"><img class="thumb" :src="todo.thumb_url" /></a>
+                        <img class="thumb" :src="todo.thumb_url" @click="e => e.target.classList.toggle('expand')" />
                     </div>
                     <div class="todo_title">
                         <a :href="$isMobile() ? todo.app_url : todo.url">{{ todo.grade }} {{
@@ -270,8 +270,13 @@ div.comment_line {
 
 div.thumb {
     flex-basis: 2em;
-    /* width: 2em; */
     flex-grow: 0;
+}
+
+img.expand {
+    width: 5em !important;
+    height: 5em !important;
+
 }
 
 div.comment {
