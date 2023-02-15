@@ -164,7 +164,7 @@ const getRndInteger = (min, max) => {
                             📍 {{ sector.name }}</div>
                     </template>
                 </ol-overlay>
-                <ol-geolocation :projection="projection" @positionChanged="geoLocChange">
+                <!-- <ol-geolocation :projection="projection" @positionChanged="geoLocChange">
                     <template v-slot="slotProps">
                         <ol-vector-layer :zIndex="2">
                             <ol-source-vector>
@@ -179,7 +179,7 @@ const getRndInteger = (min, max) => {
 
                         </ol-vector-layer>
                     </template>
-                </ol-geolocation>
+                </ol-geolocation> -->
             </ol-map>
         </div>
         <div v-for="sector in trip.sectors" :key="sector.app_url">
