@@ -22,6 +22,11 @@ env:
   SENTRY_ORG: gnerd
   SENTRY_PROJECT: dirtbag-backend
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  DB_FILE_TRIPS: "/tmp/trips.json"
+  DB_FILE_27CACHE: "/tmp/27.json"
+  DB_FILE_TODODS: "/tmp/todos.json"
+  DB_FILE_SENDS: "/tmp/sends.json"
+  WEATHER_DIRECTORY: "/tmp/"
 
 jobs:
   test:
