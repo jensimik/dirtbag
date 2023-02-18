@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from aiolimiter import AsyncLimiter
 from requests_html import HTML
 from datetime import datetime
-from .helpers import DB_27cache, DB_todos, DB_users, DB_trips, where, tinydb_set
+from .helpers import DB_27cache, DB_todos, DB_trips, where, tinydb_set
 from .config import settings
 
 rate_limit = AsyncLimiter(1, 15)
@@ -107,9 +107,10 @@ async def refresh_todo_list(
             img_element = tr.find("img", first=True)
             thumb_url = img_element.attrs["src"] if img_element else ""
             ass = tr.find("td.stxt > a")
+            name = ass[1].text
+            print(f"fetching problem {name}")
             url = "https://27crags.com" + ass[1].attrs["href"]
             app_url = await get_problem_data(problem_url=url, client=client)
-            name = ass[1].text
             comment = []
             if ascent_details := tr.find("td.stxt > div.ascent-details", first=True):
                 for link in ascent_details.find("a"):

@@ -4,7 +4,7 @@ from datetime import datetime, date
 from tinydb import where
 from libgravatar import Gravatar
 from dirtbag import schemas
-from dirtbag.helpers import DB_trips, DB_todos, DB_users, reversor, get_crag_location
+from dirtbag.helpers import DB_trips, DB_todos, reversor, get_crag_location
 from dirtbag.c27_fetcher import refresh_27crags
 from dirtbag.config import settings
 
@@ -13,9 +13,9 @@ router = APIRouter(tags=["trips"])
 
 @router.get("/create_data")
 async def create_data():
-    async with (DB_trips as db_trips, DB_users as db_users):
-        db_trips.drop_tables()
-        db_trips.insert(
+    async with DB_trips as db:
+        db.drop_tables()
+        db.insert(
             {
                 "area_name": "Bohuslän",
                 "date_from": date(2023, 5, 15).isoformat(),
@@ -24,7 +24,7 @@ async def create_data():
                 "participants": [{"user_id": "jensda", "name": "JD"}],
             }
         )
-        db_trips.insert(
+        db.insert(
             {
                 "area_name": "Albarracin",
                 "date_from": date(2023, 3, 18).isoformat(),
@@ -47,7 +47,7 @@ async def create_data():
                 ],
             }
         )
-        db_trips.insert(
+        db.insert(
             {
                 "area_name": "Albarracin",
                 "date_from": date(2023, 3, 6).isoformat(),
@@ -56,7 +56,7 @@ async def create_data():
                 "participants": [{"user_id": "jensda", "name": "JD"}],
             }
         )
-        db_trips.insert(
+        db.insert(
             {
                 "area_name": "Fontainebleau",
                 "date_from": date(2023, 4, 6).isoformat(),
@@ -67,7 +67,7 @@ async def create_data():
                 ],
             }
         )
-        db_trips.insert(
+        db.insert(
             {
                 "area_name": "Magic Wood",
                 "date_from": date(2023, 6, 19).isoformat(),
@@ -171,7 +171,7 @@ async def trip_update(
 
 @router.get("/trips/{trip_id}/{pin}")
 async def trip(trip_id: int, pin: str) -> schemas.Trip:
-    async with (DB_trips as db_trips, DB_todos as db_todos, DB_users as db_users):
+    async with (DB_trips as db_trips, DB_todos as db_todos):
         trip = db_trips.get(doc_id=trip_id)
         if trip["pin"] != pin:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)

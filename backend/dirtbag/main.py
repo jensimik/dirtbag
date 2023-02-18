@@ -1,6 +1,5 @@
 import sentry_sdk
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from dirtbag.repeat_every_helper import repeat_every
 from .config import settings
@@ -28,11 +27,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.mount("/static", StaticFiles(directory=settings.static_directory), name="static")
 
 app.include_router(trips.router)
 app.include_router(users.router)
 app.include_router(weather.router)
+
+@app.get("/healtz")
+async def healtz():
+    return {"status": "ok"}
 
 
 @app.on_event("startup")

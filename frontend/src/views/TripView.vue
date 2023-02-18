@@ -165,21 +165,20 @@ const getRndInteger = (min, max) => {
                     </template>
                 </ol-overlay>
                 <!-- <ol-geolocation :projection="projection" @positionChanged="geoLocChange">
-                    <template v-slot="slotProps">
-                        <ol-vector-layer :zIndex="2">
-                            <ol-source-vector>
-                                <ol-feature ref="positionFeature">
-                                    <ol-geom-point :coordinates="slotProps.position"></ol-geom-point>
-                                    <ol-style>
-                                        <ol-style-icon src="https://dirtbag.gnerd.dk/apple-touch-icon.png"
-                                            :scale="0.25"></ol-style-icon>
-                                    </ol-style>
-                                </ol-feature>
-                            </ol-source-vector>
-
-                        </ol-vector-layer>
-                    </template>
-                </ol-geolocation> -->
+                        <template v-slot="slotProps">
+                            <ol-vector-layer :zIndex="2">
+                                <ol-source-vector>
+                                    <ol-feature ref="positionFeature">
+                                        <ol-geom-point :coordinates="slotProps.position"></ol-geom-point>
+                                        <ol-style>
+                                            <ol-style-icon src="https://dirtbag.gnerd.dk/apple-touch-icon.png"
+                                                :scale="0.25"></ol-style-icon>
+                                        </ol-style>
+                                    </ol-feature>
+                                </ol-source-vector>
+                            </ol-vector-layer>
+                        </template>
+                    </ol-geolocation> -->
             </ol-map>
         </div>
         <div v-for="sector in trip.sectors" :key="sector.app_url">
@@ -230,7 +229,7 @@ const getRndInteger = (min, max) => {
     </div>
     <div v-if="error">
         {{ error }}
-    </div>
+</div>
 </template>
 
 <style scoped>
