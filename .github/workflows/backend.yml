@@ -24,11 +24,11 @@ env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
 jobs:
-  defaults:
-    runs-on: ubuntu-latest
-    run:
-      working-directory: backend
   test:
+    defaults:
+      runs-on: ubuntu-latest
+      run:
+        working-directory: backend
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.10
@@ -51,6 +51,10 @@ jobs:
       run: |
         pytest
   deploy:
+    defaults:
+      runs-on: ubuntu-latest
+      run:
+        working-directory: backend
     name: "Deploy on fly.io"
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: test
