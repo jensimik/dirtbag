@@ -32,9 +32,9 @@ app.include_router(trips.router)
 app.include_router(users.router)
 app.include_router(weather.router)
 
-@app.get("/healtz")
+@app.get("/")
 async def healtz():
-    return {"status": "ok"}
+    return {"everything": "is awesome"}
 
 
 @app.on_event("startup")
