@@ -12,7 +12,7 @@ router = APIRouter(tags=["weather"])
 def sector_forecast(sector_name: str):
     latitute, longitude = get_crag_location(sector_name)
     sector_place = Place(sector_name, latitute, longitude)
-    forecast = Forecast(sector_place, "dirtbag.gnerd.dk jens@gnerd.dk", save_location="/data/")
+    forecast = Forecast(sector_place, "dirtbag.gnerd.dk jens@gnerd.dk", save_location=settings.weather_directory)
     forecast.update()
     return {
         "x": [i.start_time for i in forecast.data.intervals][:48],

@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     db_file_27cache: Path = "/data/27cache.json"
     db_file_todos: Path = "/data/todos.json"
     db_file_sends: Path = "/data/sends.json"
+    weather_directory: Path = "/data/"
     sentry_dsn: str = None
     httpx_user_agent: str = "dirtbag.gnerd.dk jens@gnerd.dk"
     tz: tzfile = gettz("Europe/Copenhagen")
