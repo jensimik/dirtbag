@@ -1,59 +1,59 @@
 <script setup>
 import TripMethodsAPI from '../api/resources/TripMethods';
-import WeatherMethodsAPI from '../api/resources/WeatherMethods';
+//import WeatherMethodsAPI from '../api/resources/WeatherMethods';
 import { ref } from 'vue';
 import router from '../router';
-import { boundingExtent, getCenter, buffer } from 'ol/extent';
+//import { boundingExtent, getCenter, buffer } from 'ol/extent';
 
 
-import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LineController, LineElement, CategoryScale, TimeScale, LinearScale, PointElement } from 'chart.js'
-import 'chartjs-adapter-luxon';
+//import { Bar } from 'vue-chartjs'
+//import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LineController, LineElement, CategoryScale, TimeScale, LinearScale, PointElement } from 'chart.js'
+//import 'chartjs-adapter-luxon';
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, LineController, LineElement, PointElement, CategoryScale, TimeScale, LinearScale)
-const chartOptions = {
-    plugins: {
-        legend: {
-            display: false,
-        }
-    },
-    scales: {
-        x: {
-            type: 'time',
-            time: {
-                unit: 'hour',
-                displayFormats: {
-                    hour: 'HH:mm'
-                },
-            },
-            title: {
-                display: false,
-                text: 'Date'
-            },
-            ticks: {
-                major: {
-                    enabled: true,
-                },
-                // autoSkip: false,
-                maxRotation: 0,
-            }
-        },
-        y: {
-            title: {
-                display: false,
-                text: 'temperature C'
-            }
-        },
-        yPrecipitation: {
-            title: {
-                display: false,
-                text: 'precipitation mm'
-            },
-            position: 'right',
-        }
-    },
-    responsive: true
-}
+//ChartJS.register(Title, Tooltip, Legend, BarElement, LineController, LineElement, PointElement, CategoryScale, TimeScale, LinearScale)
+//const chartOptions = {
+//    plugins: {
+//        legend: {
+//            display: false,
+//        }
+//    },
+//    scales: {
+//        x: {
+//            type: 'time',
+//            time: {
+//                unit: 'hour',
+//                displayFormats: {
+//                    hour: 'HH:mm'
+//                },
+//            },
+//            title: {
+//                display: false,
+//                text: 'Date'
+//            },
+//            ticks: {
+//                major: {
+//                    enabled: true,
+//                },
+//                // autoSkip: false,
+//                maxRotation: 0,
+//            }
+//        },
+//        y: {
+//            title: {
+//                display: false,
+//                text: 'temperature C'
+//            }
+//        },
+//        yPrecipitation: {
+//            title: {
+//                display: false,
+//                text: 'precipitation mm'
+//            },
+//            position: 'right',
+//        }
+//    },
+//    responsive: true
+//}
 
 const props = defineProps(['id', 'pin']);
 
@@ -61,7 +61,7 @@ const trip = ref({});
 const participants = ref({});
 const loading = ref(true);
 const error = ref(false);
-const chartData = ref({});
+//const chartData = ref({});
 const getUniqueColor = (n) => {
     const rgb = [0, 0, 0];
 
@@ -79,26 +79,26 @@ try {
         participants.value[participant.user_id] = participant;
     });
     trip.value = trip_data;
-    const weatherData = await WeatherMethodsAPI.get(trip.value.sectors[0].name);
-    chartData.value = {
-        "labels": weatherData.x,
-        "datasets": [
-            {
-                type: "line",
-                label: "temperature",
-                data: weatherData.temperature,
-                borderColor: "red",
-            },
-            {
-                type: "bar",
-                label: "precipitation",
-                data: weatherData.precipitation,
-                // borderColor: "blue",
-                backgroundColor: 'blue',
-                yAxisID: "yPrecipitation"
-            }
-        ]
-    }
+//    const weatherData = await WeatherMethodsAPI.get(trip.value.sectors[0].name);
+//    chartData.value = {
+//        "labels": weatherData.x,
+//        "datasets": [
+//            {
+//                type: "line",
+//                label: "temperature",
+//                data: weatherData.temperature,
+//                borderColor: "red",
+//            },
+//            {
+//                type: "bar",
+//                label: "precipitation",
+//                data: weatherData.precipitation,
+//                // borderColor: "blue",
+//                backgroundColor: 'blue',
+//                yAxisID: "yPrecipitation"
+//            }
+//        ]
+//    }
     loading.value = false;
 } catch (e) {
     console.log(e);
@@ -107,27 +107,27 @@ try {
 }
 
 // map settings
-const locations = trip.value.sectors.map(sector => [sector.location[1], sector.location[0]]);
-const map_extent = buffer(boundingExtent(locations), 0.05);
-const center = ref(getCenter(map_extent));
-const projection = ref("EPSG:4326");
-const zoom = ref(10);
-const rotation = ref(0);
+//const locations = trip.value.sectors.map(sector => [sector.location[1], sector.location[0]]);
+//const map_extent = buffer(boundingExtent(locations), 0.05);
+//const center = ref(getCenter(map_extent));
+//const projection = ref("EPSG:4326");
+//const zoom = ref(10);
+//const rotation = ref(0);
 
-const zoomChanged = async (currentZoom) => {
-    zoom.value = currentZoom;
-}
+//const zoomChanged = async (currentZoom) => {
+//    zoom.value = currentZoom;
+//}
 
-const view = ref(null);
-const geoLocChange = (loc) => {
-    console.log(loc);
+//const view = ref(null);
+//const geoLocChange = (loc) => {
+//    console.log(loc);
     // view.value.fit([loc[0], loc[1], loc[0], loc[1]], {
     //     maxZoom: 14
     // })
-}
-const getRndInteger = (min, max) => {
-    return Math.floor(Math.random() * (max - min)) + min;
-}
+//}
+//const getRndInteger = (min, max) => {
+//    return Math.floor(Math.random() * (max - min)) + min;
+//}
 </script>
 
 <template>
@@ -137,7 +137,7 @@ const getRndInteger = (min, max) => {
             <div class="right"><router-link :to="{ name: 'trip_edit', params: { id: props.id, pin: props.pin } }"
                     class="button right">edit</router-link></div>
         </div>
-        <div v-if="false">
+<!--         <div v-if="false">
             <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
             <div class="met_license">
                 <a href="https://www.met.no/en/free-meteorological-data/Licensing-and-crediting">forecast based on data
@@ -146,7 +146,7 @@ const getRndInteger = (min, max) => {
                     Norway</a>
             </div>
         </div>
-        <div>
+ --><!--         <div>
             <ol-map style="height:400px">
                 <ol-view ref="view" :center="center" :extent="map_extent" :projection="projection" />
 
@@ -164,7 +164,7 @@ const getRndInteger = (min, max) => {
                             📍 {{ sector.name }}</div>
                     </template>
                 </ol-overlay>
-                <!-- <ol-geolocation :projection="projection" @positionChanged="geoLocChange">
+                <ol-geolocation :projection="projection" @positionChanged="geoLocChange">
                         <template v-slot="slotProps">
                             <ol-vector-layer :zIndex="2">
                                 <ol-source-vector>
@@ -178,9 +178,9 @@ const getRndInteger = (min, max) => {
                                 </ol-source-vector>
                             </ol-vector-layer>
                         </template>
-                    </ol-geolocation> -->
+                    </ol-geolocation>
             </ol-map>
-        </div>
+        </div> -->
         <div v-for="sector in trip.sectors" :key="sector.app_url">
             <h3><a :href="$isMobile() ? sector.app_url : sector.url">{{
                 sector.name

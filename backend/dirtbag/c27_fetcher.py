@@ -100,56 +100,56 @@ async def refresh_todo_list(
                     if u["user_id"] == username:
                         u["name"] = climber_initials
                 db_trips.upsert(trip)
-        todo_list = html.find("table.todo-list tbody", first=True)
-        for tr in todo_list.find("tr"):
-            tds = tr.find("td.stxt")
-            grade = tr.find("td.grade", first=True).text
-            img_element = tr.find("img", first=True)
-            thumb_url = img_element.attrs["src"] if img_element else ""
-            ass = tr.find("td.stxt > a")
-            name = ass[1].text
-            print(f"fetching problem {name}")
-            url = "https://27crags.com" + ass[1].attrs["href"]
-            app_url = await get_problem_data(problem_url=url, client=client)
-            comment = []
-            if ascent_details := tr.find("td.stxt > div.ascent-details", first=True):
-                for link in ascent_details.find("a"):
-                    _url = link.attrs["href"]
-                    o = urlparse(_url)
-                    comment.append({"type": "link", "url": _url, "text": o.hostname})
-                if not comment:
-                    comment = [{"type": "text", "text": ascent_details.text}]
-            sector_url = (
-                "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
-            )
-            sector_name = tds[1].text
-            sector_data = await get_sector_data(sector_url=sector_url, client=client)
-            unique_id = hashlib.md5(str.encode(f"{username}-{app_url}")).hexdigest()
-            area_name = (
-                sector_data["area_name"] if sector_data["area_name"] else sector_name
-            )
-            area_url = (
-                sector_data["area_url"] if sector_data["area_name"] else sector_url
-            )
-            data = {
-                "id": unique_id,
-                "user_id": username,
-                "name": name,
-                "grade": grade,
-                "thumb_url": thumb_url,
-                "url": url,
-                "app_url": app_url,
-                "sector_name": sector_name,
-                "sector_url": sector_url,
-                "sector_app_url": sector_data["app_url"],
-                "sector_thumb_url": sector_data["sector_thumb_url"],
-                "area_name": area_name,
-                "area_url": area_url,
-                "comment": comment,
-                "batch_id": batch_id,
-            }
-            async with DB_todos as db:
-                db.upsert(data, where("id") == unique_id)
+        if todo_list := html.find("table.todo-list tbody", first=True):
+            for tr in todo_list.find("tr"):
+                tds = tr.find("td.stxt")
+                grade = tr.find("td.grade", first=True).text
+                img_element = tr.find("img", first=True)
+                thumb_url = img_element.attrs["src"] if img_element else ""
+                ass = tr.find("td.stxt > a")
+                name = ass[1].text
+                print(f"fetching problem {name}")
+                url = "https://27crags.com" + ass[1].attrs["href"]
+                app_url = await get_problem_data(problem_url=url, client=client)
+                comment = []
+                if ascent_details := tr.find("td.stxt > div.ascent-details", first=True):
+                    for link in ascent_details.find("a"):
+                        _url = link.attrs["href"]
+                        o = urlparse(_url)
+                        comment.append({"type": "link", "url": _url, "text": o.hostname})
+                    if not comment:
+                        comment = [{"type": "text", "text": ascent_details.text}]
+                sector_url = (
+                    "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
+                )
+                sector_name = tds[1].text
+                sector_data = await get_sector_data(sector_url=sector_url, client=client)
+                unique_id = hashlib.md5(str.encode(f"{username}-{app_url}")).hexdigest()
+                area_name = (
+                    sector_data["area_name"] if sector_data["area_name"] else sector_name
+                )
+                area_url = (
+                    sector_data["area_url"] if sector_data["area_name"] else sector_url
+                )
+                data = {
+                    "id": unique_id,
+                    "user_id": username,
+                    "name": name,
+                    "grade": grade,
+                    "thumb_url": thumb_url,
+                    "url": url,
+                    "app_url": app_url,
+                    "sector_name": sector_name,
+                    "sector_url": sector_url,
+                    "sector_app_url": sector_data["app_url"],
+                    "sector_thumb_url": sector_data["sector_thumb_url"],
+                    "area_name": area_name,
+                    "area_url": area_url,
+                    "comment": comment,
+                    "batch_id": batch_id,
+                }
+                async with DB_todos as db:
+                    db.upsert(data, where("id") == unique_id)
     else:
         print(f"error getting todolist for {username}")
     # clear out those not updated in the batch
