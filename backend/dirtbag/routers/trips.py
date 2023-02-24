@@ -79,9 +79,22 @@ async def create_data():
 
 
 @router.post("/trips")
-async def new_trip(new_trip: schemas.TripDB) -> int:
+async def new_trip(new_trip: schemas.TripDB, background_tasks: BackgroundTasks) -> int:
     async with DB_trips as db:
-        doc_id = db.insert(new_trip.dict())
+        data = {
+            "date_from": new_trip.date_from.isoformat(),
+            "date_to": new_trip.date_to.isoformat(),
+            "participants": [
+                {"user_id": user_id.strip(), "name": f"A{i}"}
+                for i, user_id in enumerate(new_trip.participants.split(","))
+            ],
+        }
+        doc_id = db.insert(data)
+    background_tasks.add_task(
+        refresh_27crags,
+        usernames=[u["user_id"] for u in data["participants"]],
+        trip_id=doc_id,
+    )
     return doc_id
 
 
