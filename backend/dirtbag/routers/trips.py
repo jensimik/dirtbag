@@ -78,6 +78,13 @@ async def create_data():
         )
 
 
+@router.post("/trips")
+async def new_trip(new_trip: schemas.TripDB) -> int:
+    async with DB_trips as db:
+        doc_id = db.insert(new_trip)
+    return doc_id
+
+
 @router.get("/trips")
 async def trips() -> list[schemas.TripList]:
     async with DB_trips as db_trips:

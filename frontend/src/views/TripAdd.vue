@@ -1,6 +1,7 @@
 <script setup>
 import UserMethodsAPI from '../api/resources/UserMethods';
 import { ref } from 'vue';
+import router from '../router';
 
 const data = ref({ date_from: "", date_to: "", user_id: "", area_name: "" });
 const processing = ref(false);
@@ -18,8 +19,15 @@ const sync_27_crags = async () => {
             areas.value = await UserMethodsAPI.areas(data.value.user_id);
             synced.value = true;
             clearInterval(timer);
+            processing.value = false;
         }
     }, 10000);
+}
+
+const create_trip = async () => {
+    processing.value = true;
+    const new_id = await UserMethodsAPI.create(data.value);
+    router.push({ name: 'trip_auth', params: { id: new_id, pin: '1337' } })
 }
 </script>
 
@@ -52,7 +60,7 @@ const sync_27_crags = async () => {
                 placeholder="enter a list of 27crags user_names seperated by comma fx.: jensda,strongdude,ondra" />
             <div class="flex two">
                 <div></div>
-                <div class="right"><button class="button">create</button>
+                <div class="right"><button class="button" @click="create_trip" :disabled="processing">create</button>
                 </div>
             </div>
         </div>

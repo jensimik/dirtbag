@@ -47,11 +47,19 @@ class User(BaseModel):
     name: Optional[str]
 
 
-class Trip(BaseModel):
-    id: int
+class BaseTrip(BaseModel):
     area_name: str
     date_from: date
     date_to: date
+
+
+class TripDB(BaseTrip):
+    participants: str
+    pin: str = "1337"
+
+
+class Trip(BaseTrip):
+    id: int
     participants: list[User]
     sectors: list[Sector]
 

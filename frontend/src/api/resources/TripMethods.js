@@ -47,6 +47,18 @@ export default {
             return response.json();
         }
     },
+    async create(new_trip) {
+        const response = await fetch(APISettings.baseURL + '/trips', {
+            method: 'POST',
+            headers: { ...APISettings.headers, 'Content-Type': 'Application/json' },
+            body: JSON.stringify(new_trip)
+        });
+        if (response.status != 200) {
+            throw response.status;
+        } else {
+            return response.json();
+        }
+    },
     async resync(trip_id, pin) {
         const response = await fetch(APISettings.baseURL + '/trips/' + trip_id + '/' + pin + '/resync', {
             method: 'POST',
