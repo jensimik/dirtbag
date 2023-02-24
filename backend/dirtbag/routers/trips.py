@@ -93,6 +93,7 @@ async def new_trip(new_trip: schemas.TripDB, background_tasks: BackgroundTasks) 
             "area_name": new_trip.area_name,
             "date_from": new_trip.date_from.isoformat(),
             "date_to": new_trip.date_to.isoformat(),
+            "pin": new_trip.pin,
             "participants": [
                 {"user_id": user_id.strip(), "name": f"A{i}"}
                 for i, user_id in enumerate(new_trip.participants.split(","))
