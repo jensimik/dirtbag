@@ -1,5 +1,6 @@
 <script setup>
 import UserMethodsAPI from '../api/resources/UserMethods';
+import TripMethodsAPI from '../api/resources/TripMethods';
 import { ref } from 'vue';
 import router from '../router';
 
@@ -26,7 +27,7 @@ const sync_27_crags = async () => {
 
 const create_trip = async () => {
     processing.value = true;
-    const new_id = await UserMethodsAPI.create(data.value);
+    const new_id = await TripMethodsAPI.create(data.value);
     router.push({ name: 'trip_auth', params: { id: new_id, pin: '1337' } })
 }
 </script>
