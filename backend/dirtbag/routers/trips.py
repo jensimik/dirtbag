@@ -11,6 +11,14 @@ from dirtbag.config import settings
 router = APIRouter(tags=["trips"])
 
 
+@router.get("/clean_data")
+async def clean_data():
+    async with DB_trips as db:
+        for trip in db:
+            if "area_name" not in trip:
+                db.remove(doc_ids=[trip.doc_id])
+
+
 @router.get("/create_data")
 async def create_data():
     async with DB_trips as db:
@@ -82,6 +90,7 @@ async def create_data():
 async def new_trip(new_trip: schemas.TripDB, background_tasks: BackgroundTasks) -> int:
     async with DB_trips as db:
         data = {
+            "area_name": new_trip.area_name,
             "date_from": new_trip.date_from.isoformat(),
             "date_to": new_trip.date_to.isoformat(),
             "participants": [
