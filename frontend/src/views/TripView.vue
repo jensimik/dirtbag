@@ -133,7 +133,7 @@ try {
 <template>
     <div v-if="!loading">
         <div class="flex two">
-            <h2>{{ trip.area_name }}</h2>
+            <div><h2>{{ trip.area_name }}</h2></div>
             <div class="right"><router-link :to="{ name: 'trip_edit', params: { id: props.id, pin: props.pin } }"
                     class="button right">edit</router-link></div>
         </div>
