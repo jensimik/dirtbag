@@ -4,7 +4,7 @@ import TripMethodsAPI from '../api/resources/TripMethods';
 import { ref } from 'vue';
 import router from '../router';
 
-const data = ref({ date_from: "", date_to: "", user_id: "", area_name: "" });
+const data = ref({ date_from: "", date_to: "", user_id: "", area_name: "", participants: "" });
 const processing = ref(false);
 const sync_text = ref("sync 27 crags");
 const synced = ref(false);
@@ -18,6 +18,7 @@ const sync_27_crags = async () => {
         const status = await UserMethodsAPI.sync_done(data.value.user_id);
         if (!status.processing) {
             areas.value = await UserMethodsAPI.areas(data.value.user_id);
+            data.value.participants = data.value.user_id;
             synced.value = true;
             clearInterval(timer);
             processing.value = false;
@@ -57,7 +58,7 @@ const create_trip = async () => {
                 <option :value="area.name" v-for="area in areas">{{ area.name }}</option>
             </select>
             <label for="crew">Crew</label>
-            <input type="text" id="crew"
+            <input type="text" id="crew" v-model="data.participants"
                 placeholder="enter a list of 27crags user_names seperated by comma fx.: jensda,strongdude,ondra" />
             <div class="flex two">
                 <div></div>
