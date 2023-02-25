@@ -187,6 +187,8 @@ async def trip_update(
         }
         for i, raw_user_id in enumerate(trip_update.participants.split(","))
     ]
+    trip["date_from"] = trip_update.date_from.isoformat()
+    trip["date_to"] = trip_update.date_to.isoformat()
     async with DB_trips as db:
         db.upsert(trip)
     new_set = {u["user_id"] for u in trip["participants"]}

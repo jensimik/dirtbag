@@ -35,11 +35,11 @@ export default {
             return response.json();
         }
     },
-    async update(trip_id, pin, participants) {
+    async update(trip_id, pin, data) {
         const response = await fetch(APISettings.baseURL + '/trips/' + trip_id + '/' + pin + '/update', {
             method: 'POST',
             headers: { ...APISettings.headers, 'Content-Type': 'Application/json' },
-            body: JSON.stringify(participants)
+            body: JSON.stringify(data)
         });
         if (response.status != 200) {
             throw response.status;

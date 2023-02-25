@@ -31,6 +31,10 @@ const resync = async () => {
 
 <template>
     <h2>{{ trip.area_name }}</h2>
+    <label for="date_from">Date from</label>
+    <input type="date" id="date_from" v-model="data.date_from" pattern="\d{4}-\d{2}-\d{2}" />
+    <label for="date_to">Date to</label>
+    <input type="date" id="date_to" v-model="data.date_to" pattern="\d{4}-\d{2}-\d{2}" />
     <label for="participants">Participants</label>
     <input type="text" v-model="data.participants" />
     <button class="button" :disabled="saving" @click="save">save</button>

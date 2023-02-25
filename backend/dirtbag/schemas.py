@@ -76,4 +76,6 @@ class TripList(BaseModel):
 
 
 class TripUpdate(BaseModel):
+    date_from: date
+    date_to: date
     participants: str
