@@ -8,7 +8,7 @@ const props = defineProps(['id', 'pin']);
 const trip = ref({});
 const trip_data = await TripMethodsAPI.get(props.id, props.pin);
 trip.value = trip_data;
-const data = ref({ participants: trip.value.participants.map(item => item.user_id).join(',') });
+const data = ref({ date_from: trip_data.date_from, date_to: trip_data.date_to, participants: trip.value.participants.map(item => item.user_id).join(',') });
 
 const saving = ref(false);
 const save = async () => {
