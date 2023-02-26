@@ -14,6 +14,7 @@ const saving = ref(false);
 const save = async () => {
     saving.value = true;
     await TripMethodsAPI.update(props.id, props.pin, data.value);
+    router.push({name: "trip_auth", params: {id: props.id, pin: props.pin}});
     saving.value = false;
 }
 
