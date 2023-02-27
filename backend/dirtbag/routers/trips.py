@@ -2,7 +2,7 @@ import itertools
 from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 from datetime import datetime, date
 from tinydb import where
-from libgravatar import Gravatar
+from markdown import markdown
 from dirtbag import schemas
 from dirtbag.helpers import DB_trips, DB_todos, reversor, get_crag_location
 from dirtbag.c27_fetcher import refresh_27crags
@@ -189,6 +189,7 @@ async def trip_update(
     ]
     trip["date_from"] = trip_update.date_from.isoformat()
     trip["date_to"] = trip_update.date_to.isoformat()
+    trip["markdown"] = trip_update.markdown
     async with DB_trips as db:
         db.upsert(trip)
     new_set = {u["user_id"] for u in trip["participants"]}
@@ -244,6 +245,8 @@ async def trip(trip_id: int, pin: str) -> schemas.Trip:
             area_name=trip["area_name"],
             date_from=trip["date_from"],
             date_to=trip["date_to"],
+            markdown=trip.get("markdown", ""),
+            markdown_html=markdown(trip.get("markdown", "")),
             participants=[schemas.User(**u) for u in trip["participants"]],
             sectors=[
                 schemas.Sector(

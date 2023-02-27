@@ -8,7 +8,7 @@ const props = defineProps(['id', 'pin']);
 const trip = ref({});
 const trip_data = await TripMethodsAPI.get(props.id, props.pin);
 trip.value = trip_data;
-const data = ref({ date_from: trip_data.date_from, date_to: trip_data.date_to, participants: trip.value.participants.map(item => item.user_id).join(',') });
+const data = ref({ date_from: trip_data.date_from, date_to: trip_data.date_to, markdown: trip_data.markdown, participants: trip.value.participants.map(item => item.user_id).join(',') });
 
 const saving = ref(false);
 const save = async () => {
@@ -36,6 +36,8 @@ const resync = async () => {
     <input type="date" id="date_from" v-model="data.date_from" pattern="\d{4}-\d{2}-\d{2}" />
     <label for="date_to">Date to</label>
     <input type="date" id="date_to" v-model="data.date_to" pattern="\d{4}-\d{2}-\d{2}" />
+    <label for="markdown">Text/markdown</label>
+    <textarea id="markdown" v-model="data.markdown"></textarea>
     <label for="participants">Participants</label>
     <input type="text" v-model="data.participants" />
     <button class="button" :disabled="saving" @click="save">save</button>

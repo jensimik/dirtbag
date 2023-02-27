@@ -137,12 +137,15 @@ try {
             <div class="right"><router-link :to="{ name: 'trip_edit', params: { id: props.id, pin: props.pin } }"
                     class="button right">edit</router-link></div>
         </div>
-        <div>
-            <img v-if="trip.area_name == 'Alcañiz'" src="https://www.yr.no/nb/innhold/2-3130606/meteogram.svg" class="yrsvg"/>
+        <div v-html="trip.markdown">
+        </div>
+<!--
+        <img v-if="trip.area_name == 'Alcañiz'" src="https://www.yr.no/nb/innhold/2-3130606/meteogram.svg" class="yrsvg"/>
             <img v-if="trip.area_name == 'Albarracin'" src="https://www.yr.no/nb/innhold/2-3130679/meteogram.svg" class="yrsvg"/>
             <img v-if="trip.area_name == 'Fontainebleau'" src="https://www.yr.no/nb/innhold/2-3018074/meteogram.svg" class="yrsvg"/>
-        </div>
-<!--         <div v-if="false">
+
+-->
+        <!--         <div v-if="false">
             <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
             <div class="met_license">
                 <a href="https://www.met.no/en/free-meteorological-data/Licensing-and-crediting">forecast based on data

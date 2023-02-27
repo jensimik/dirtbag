@@ -51,6 +51,10 @@ class BaseTrip(BaseModel):
     area_name: str
     date_from: date
     date_to: date
+    markdown: str
+
+
+2
 
 
 class TripDB(BaseTrip):
@@ -79,3 +83,4 @@ class TripUpdate(BaseModel):
     date_from: date
     date_to: date
     participants: str
+    markdown: str
