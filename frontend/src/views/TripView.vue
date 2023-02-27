@@ -137,7 +137,7 @@ try {
             <div class="right"><router-link :to="{ name: 'trip_edit', params: { id: props.id, pin: props.pin } }"
                     class="button right">edit</router-link></div>
         </div>
-        <div v-html="trip.markdown">
+        <div v-html="trip.markdown_html">
         </div>
 <!--
         <img v-if="trip.area_name == 'Alcañiz'" src="https://www.yr.no/nb/innhold/2-3130606/meteogram.svg" class="yrsvg"/>
