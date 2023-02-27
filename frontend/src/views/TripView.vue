@@ -240,10 +240,12 @@ try {
 </div>
 </template>
 
-<style scoped>
+<style>
 .markdown img {
     width: 100%;
 }
+</style>
+<style scoped>
 .marker {
     font-size: 0.6em;
     transform-origin: top left;
