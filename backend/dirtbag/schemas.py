@@ -51,7 +51,8 @@ class BaseTrip(BaseModel):
     area_name: str
     date_from: date
     date_to: date
-    markdown: str
+    markdown: Optional[str]
+    markdown_html: Optional[str]
 
 
 2
