@@ -241,7 +241,7 @@ try {
 </template>
 
 <style scoped>
-.markdown .img {
+.markdown img {
     width: 100%;
 }
 .marker {
