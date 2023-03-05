@@ -35,6 +35,10 @@ nav.imponent {
   border-bottom: 4px dotted #dfdfdf;
 }
 
+nav .brand {
+  font-weight: normal;
+}
+
 div#content {
   margin-left: auto;
   margin-right: auto;
