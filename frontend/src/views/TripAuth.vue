@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import Layout from '../components/Layout.vue';
 import TripMethods from '../api/resources/TripMethods';
 import router from '../router';
 
@@ -18,8 +19,12 @@ const auth = async () => {
 </script>
 
 <template>
-    <h2>{{ trip.area_name }}</h2>
-    <label for="password">Enter code</label>
-    <input id="password" type="password" v-model="auth_code" />
-    <button class="button" @click="auth">auth</button>
+    <Layout>
+        <template v-slot:title>{{ trip.area_name }}</template>
+        <template v-slot:content>
+            <label for="password">Enter code</label>
+            <input id="password" type="password" v-model="auth_code" />
+            <button class="button" @click="auth">auth</button>
+        </template>
+    </Layout>
 </template>

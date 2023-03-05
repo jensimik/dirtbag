@@ -1,4 +1,5 @@
 <script setup>
+import Layout from '../components/Layout.vue';
 import TripMethodsAPI from '../api/resources/TripMethods';
 import { ref } from 'vue';
 
@@ -18,11 +19,12 @@ trips.value = await TripMethodsAPI.index();
 </script>
 
 <template>
-    <div class="flex two">
-        <h2>👜 Dirtbag trips</h2>
-        <div class="right"><router-link :to="{ name: 'trip_add' }" class="button">create</router-link></div>
-    </div>
-    <div class="flex three" v-for=" trip in trips" :key="trip.id">
+    <Layout>
+        <template v-slot:menu>
+            <router-link :to="{ name: 'trip_add' }" class="button">create</router-link>
+        </template>
+        <template v-slot:content>
+            <div class="flex three" v-for=" trip in trips" :key="trip.id">
         <div><router-link :to="{ name: 'auth_trip', params: { id: trip.id } }">{{ trip.area_name }}</router-link></div>
         <div>{{ trip.date_from_display }} -{{ trip.date_to_display }} ({{
             trip.duration ? trip.duration + ' days' :
@@ -34,6 +36,8 @@ trips.value = await TripMethodsAPI.index();
             }}</span>
         </div>
     </div>
+        </template>
+    </Layout>
 </template>
 
 <style scoped>

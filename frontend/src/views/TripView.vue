@@ -1,4 +1,5 @@
 <script setup>
+import Layout from '../components/Layout.vue';
 import TripMethodsAPI from '../api/resources/TripMethods';
 //import WeatherMethodsAPI from '../api/resources/WeatherMethods';
 import { ref } from 'vue';
@@ -131,12 +132,12 @@ try {
 </script>
 
 <template>
-    <div v-if="!loading">
-        <div class="flex two">
-            <div><h2>{{ trip.area_name }}</h2></div>
-            <div class="right"><router-link :to="{ name: 'trip_edit', params: { id: props.id, pin: props.pin } }"
-                    class="button right">edit</router-link></div>
-        </div>
+    <Layout>
+            <template v-slot:title>{{ trip.area_name }}</template>
+            <template v-slot:menu><router-link :to="{ name: 'trip_edit', params: { id: props.id, pin: props.pin } }"
+                    class="button">edit</router-link></template>
+            <template v-slot:content>
+                <div v-if="!loading">
         <div v-html="trip.markdown_html" class="markdown">
         </div>
 <!--
@@ -238,6 +239,8 @@ try {
     <div v-if="error">
         {{ error }}
 </div>
+            </template>
+    </Layout>
 </template>
 
 <style>

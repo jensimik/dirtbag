@@ -1,5 +1,5 @@
 import itertools
-from fastapi import APIRouter, BackgroundTasks, HTTPException, status
+from fastapi import APIRouter, Response, BackgroundTasks, HTTPException, status
 from datetime import datetime, date
 from tinydb import where
 from markdown import markdown
@@ -203,7 +203,7 @@ async def trip_update(
 
 
 @router.get("/trips/{trip_id}/{pin}")
-async def trip(trip_id: int, pin: str) -> schemas.Trip:
+async def trip(trip_id: int, pin: str, response: Response) -> schemas.Trip:
     async with (DB_trips as db_trips, DB_todos as db_todos):
         trip = db_trips.get(doc_id=trip_id)
         if trip["pin"] != pin:
@@ -239,6 +239,10 @@ async def trip(trip_id: int, pin: str) -> schemas.Trip:
             k: list(g)
             for k, g in itertools.groupby(grouped_data, key=lambda d: d["sector_name"])
         }
+        # set cache-control headers to allow caching in the field - try to revalidate after an hour and use cached version up to a week
+        response.headers[
+            "Cache-Control"
+        ] = "max-age=3600, stale-while-revalidate=604800"
         # return the data packed in a schemas.Trip
         return schemas.Trip(
             id=trip.doc_id,
