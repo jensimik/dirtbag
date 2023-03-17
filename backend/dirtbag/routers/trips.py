@@ -239,10 +239,6 @@ async def trip(trip_id: int, pin: str, response: Response) -> schemas.Trip:
             k: list(g)
             for k, g in itertools.groupby(grouped_data, key=lambda d: d["sector_name"])
         }
-        # set cache-control headers to allow caching in the field - try to revalidate after an hour and use cached version up to a week
-        response.headers[
-            "Cache-Control"
-        ] = "max-age=3600, stale-while-revalidate=604800"
         # return the data packed in a schemas.Trip
         return schemas.Trip(
             id=trip.doc_id,
