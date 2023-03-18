@@ -20,7 +20,7 @@
     "vue3-openlayers": "^0.1.74"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.0.0",
+    "@vitejs/plugin-vue": "^4.1.0",
     "vite": "^4.2.0"
   }
 }
