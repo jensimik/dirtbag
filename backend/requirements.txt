@@ -29,7 +29,7 @@ metno-locationforecast==1.1.0
 mypy-extensions==1.0.0
 packaging==23.0
 parse==1.19.0
-pathspec==0.11.0
+pathspec==0.11.1
 platformdirs==3.1.1
 pydantic==1.10.5
 pyee==8.2.2
