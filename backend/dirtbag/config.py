@@ -11,6 +11,7 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "http://192.168.1.44:5173",
         "https://dirtbag.gnerd.dk",
+        "https://dirtbag.dk",
     ]
     db_file_trips: Path = "/data/trips.json"
     db_file_27cache: Path = "/data/27cache.json"
