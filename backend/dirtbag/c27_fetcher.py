@@ -194,7 +194,7 @@ async def daily_resync():
         usernames = set(
             [
                 u["user_id"]
-                for d in db.search(where("date_to") >= datetime.utcnow())
+                for d in db.search(where("date_to") >= datetime.utcnow().isoformat())
                 for u in d["participants"]
             ]
         )
