@@ -179,7 +179,7 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
                 lg = list(g)
                 user_ids = [i["user_id"] for i in lg]
                 # unpack all users comments
-                comments = [u for i in lg for u in i["comment"]]
+                comments = [u for i in lg for u in i.get("comment", "")]
                 yield {
                     **lg[0],
                     "user_ids": user_ids,
