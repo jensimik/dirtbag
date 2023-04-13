@@ -4,7 +4,7 @@ from datetime import datetime, date
 from tinydb import where
 from dirtbag import schemas
 from dirtbag.c27_fetcher import refresh_27crags
-from dirtbag.helpers import DB_todos, DB_27cache
+from dirtbag.helpers import DB_todos, DB_27cache, get_crag_location, reversor
 from dirtbag.config import settings
 
 router = APIRouter(tags=["users"])
@@ -40,3 +40,41 @@ async def user_areas(user_id: str) -> list[dict]:
             for k, g in itertools.groupby(data, key=lambda d: d["area_name"])
         }
         return [{"name": k, "todos_count": v} for k, v in areas_dict.items()]
+
+
+@router.get("/user/{user_id}/{area_name}/todos")
+async def user_areas(user_id: str, area_name: str):
+    async with (DB_todos as db_todos):
+        # get all todos for the trip area
+        data = sorted(
+            db_todos.search(
+                (where("area_name") == area_name) & where("user_id") == user_id
+            ),
+            key=lambda d: d["sector_name"],
+        )
+
+        # group by sector_name
+        sectors_dict = {
+            k: list(g)
+            for k, g in itertools.groupby(data, key=lambda d: d["sector_name"])
+        }
+
+        # return the data
+        return dict(
+            sectors=[
+                schemas.Sector(
+                    name=k,
+                    url=v[0]["sector_url"],
+                    app_url=v[0]["sector_app_url"],
+                    thumb_url=v[0]["sector_thumb_url"],
+                    location=get_crag_location(v[0]["sector_name"]),
+                    todos=[
+                        schemas.TripTodo(**todo)
+                        for todo in sorted(
+                            v, key=lambda d: (reversor(d["grade"]), d["name"])
+                        )
+                    ],
+                )
+                for k, v in sectors_dict.items()
+            ]
+        )

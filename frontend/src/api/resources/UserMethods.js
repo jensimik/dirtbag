@@ -24,7 +24,7 @@ export default {
             return response.json();
         }
     },
-    async areas(user_id) {
+    async get_areas(user_id) {
         const response = await fetch(APISettings.baseURL + '/user/' + user_id + '/areas', {
             method: 'GET',
             headers: APISettings.headers
@@ -35,4 +35,16 @@ export default {
             return response.json();
         }
     },
+    async get_todos(user_id, area_name) {
+        const response = await fetch(APISettings.baseURL + '/user/' + user_id + '/' + area_name + '/todos', {
+            method: 'GET',
+            headers: APISettings.headers
+        });
+        if (response.status != 200) {
+            throw response.status;
+        } else {
+            return response.json();
+        }
+    },
 }
+

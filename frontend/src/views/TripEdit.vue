@@ -25,7 +25,7 @@ const get_trip = async () => {
 const saving = ref(false);
 const save = async () => {
     saving.value = true;
-    await TripMethodsAPI.update(props.id, props.pin, data.value);
+    await TripMethodsAPI.update(props.id, pin.value, data.value);
     router.push({name: "trip_view", params: {id: props.id}});
     saving.value = false;
 }
@@ -34,7 +34,7 @@ const save = async () => {
 const resyncing = ref(false);
 const resync = async () => {
     resyncing.value = true;
-    await TripMethodsAPI.resync(props.id, props.pin);
+    await TripMethodsAPI.resync(props.id, pin.value);
     await new Promise(r => setTimeout(r, 20000));
     resyncing.value = false;
 }
