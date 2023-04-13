@@ -55,12 +55,9 @@ class BaseTrip(BaseModel):
     markdown_html: Optional[str]
 
 
-2
-
-
 class TripDB(BaseTrip):
     participants: str
-    pin: str = "1337"
+    pin: str
 
 
 class Trip(BaseTrip):
