@@ -4,7 +4,14 @@ from datetime import datetime, date
 from tinydb import where
 from markdown import markdown
 from dirtbag import schemas
-from dirtbag.helpers import DB_trips, DB_todos, reversor, get_crag_location, yr_data
+from dirtbag.helpers import (
+    DB_trips,
+    DB_todos,
+    DB_sends,
+    reversor,
+    get_crag_location,
+    yr_data,
+)
 from dirtbag.c27_fetcher import refresh_27crags
 from dirtbag.config import settings
 
@@ -139,8 +146,21 @@ async def trip_delete(trip_id: int, pin: str):
 
 @router.get("/trips/{trip_id}")
 async def trip(trip_id: int, response: Response) -> schemas.Trip:
-    async with (DB_trips as db_trips, DB_todos as db_todos):
+    async with (DB_trips as db_trips, DB_todos as db_todos, DB_sends as db_sends):
         trip = db_trips.get(doc_id=trip_id)
+
+        ticks = sorted(
+            db_sends.search(
+                (where("area_name") == trip["area_name"])
+                & where("user_id").one_of([u["user_id"] for u in trip["participants"]])
+            ),
+            key=lambda d: d["app_url"],
+        )
+
+        ticks_by_app_url = {
+            k: [i["user_id"] for i in list(g)]
+            for k, g in itertools.groupby(ticks, key=lambda d: d["app_url"])
+        }
 
         # get all todos for the trip area
         data = sorted(
@@ -161,6 +181,7 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
                 yield {
                     **lg[0],
                     "user_ids": user_ids,
+                    "ticks": ticks_by_app_url.get(k, []),
                     "comments": comments,
                 }
 

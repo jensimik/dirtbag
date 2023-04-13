@@ -25,6 +25,7 @@ class BaseTodo(BaseModel):
 
 class TripTodo(BaseTodo):
     user_ids: list[str]
+    tick_ids: list[str]
     comments: list[Comment]
 
 
