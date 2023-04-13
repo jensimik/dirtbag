@@ -48,7 +48,7 @@ async def user_areas(user_id: str, area_name: str):
         # get all todos for the trip area
         data = sorted(
             db_todos.search(
-                (where("area_name") == area_name) & where("user_id") == user_id
+                (where("area_name") == area_name) & (where("user_id") == user_id)
             ),
             key=lambda d: d["sector_name"],
         )
