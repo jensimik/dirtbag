@@ -280,4 +280,8 @@ async def daily_resync():
                 for u in d["participants"]
             ]
         )
-    await refresh_27crags(usernames=list(usernames), ticks=True)
+    try:
+        print(usernames)
+        await refresh_27crags(usernames=list(usernames), ticks=True)
+    except Exception as ex:
+        print(f"failed here {ex}")
