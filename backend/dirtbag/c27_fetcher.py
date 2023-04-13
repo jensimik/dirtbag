@@ -232,7 +232,7 @@ async def refresh_tick_list(username: str, client: httpx.AsyncClient):
     else:
         print(f"error getting tick-list for {username}")
     # clear out those not updated in the batch
-    async with DB_todos as db:
+    async with DB_sends as db:
         db.remove((where("user_id") == username) & (where("batch_id") < batch_id))
     # clear simple sync lock
     async with DB_27cache as db:
