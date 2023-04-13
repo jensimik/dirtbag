@@ -12,7 +12,7 @@ class Comment(BaseModel):
 class BaseTodo(BaseModel):
     name: str
     grade: str
-    thumb_url: str
+    thumb_url: Optional[str] = ""
     url: str
     app_url: str
     sector_name: str
