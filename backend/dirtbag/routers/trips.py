@@ -167,7 +167,7 @@ async def trip_resync(trip_id: int, pin: str, background_tasks: BackgroundTasks)
     return {"status": "OK"}
 
 
-@router.post("/trips/{trip_id}/{pin}/update")
+@router.patch("/trips/{trip_id}/{pin}")
 async def trip_update(
     trip_id: int,
     pin: str,
@@ -199,6 +199,16 @@ async def trip_update(
             usernames=[u["user_id"] for u in trip["participants"]],
             trip_id=trip_id,
         )
+    return {"status": "OK"}
+
+
+@router.delete("/trips/{trip_id}/{pin}")
+async def trip_delete(trip_id: int, pin: str):
+    async with DB_trips as db:
+        trip = db.get(doc_id=trip_id)
+        if trip["pin"] != pin:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+        db.remove(doc_ids=[trip.doc_id])
     return {"status": "OK"}
 
 

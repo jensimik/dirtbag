@@ -36,8 +36,8 @@ export default {
         }
     },
     async update(trip_id, pin, data) {
-        const response = await fetch(APISettings.baseURL + '/trips/' + trip_id + '/' + pin + '/update', {
-            method: 'POST',
+        const response = await fetch(APISettings.baseURL + '/trips/' + trip_id + '/' + pin, {
+            method: 'PATCH',
             headers: { ...APISettings.headers, 'Content-Type': 'Application/json' },
             body: JSON.stringify(data)
         });
@@ -52,6 +52,18 @@ export default {
             method: 'POST',
             headers: { ...APISettings.headers, 'Content-Type': 'Application/json' },
             body: JSON.stringify(new_trip)
+        });
+        if (response.status != 200) {
+            throw response.status;
+        } else {
+            return response.json();
+        }
+    },
+    async remove(trip_id, pin, data) {
+        const response = await fetch(APISettings.baseURL + '/trips/' + trip_id + '/' + pin, {
+            method: 'DELETE',
+            headers: { ...APISettings.headers, 'Content-Type': 'Application/json' },
+            body: JSON.stringify(data)
         });
         if (response.status != 200) {
             throw response.status;
