@@ -64,6 +64,12 @@ try {
                         }}</a>
                     </div>
                     <div class="participants">
+                        <span class="tag tick" :style="{
+                            backgroundColor: participants[user_id].background_color,
+                            color: participants[user_id].color
+                        }" v-for="user_id in todo.ticks">{{
+    participants[user_id].name
+}}</span>
                         <span class="tag" :style="{
                             backgroundColor: participants[user_id].background_color,
                             color: participants[user_id].color
@@ -168,7 +174,7 @@ div.todo_title {
 }
 
 div.participants {
-    flex-basis: 4em;
+    flex-basis: 5em;
     text-align: right;
 }
 
@@ -184,6 +190,11 @@ img.thumb {
 
 img.header {
     width: 100%;
+}
+
+.tick {
+    text-decoration: line-through;
+    text-decoration-thickness: 0.15em;
 }
 
 
