@@ -191,7 +191,7 @@ async def refresh_27crags(usernames: list[str], trip_id: int = None):
 async def daily_resync():
     print("doing daily resync")
     async with DB_trips as db:
-        usernames = (
+        usernames = list(
             u["user_id"]
             for d in db  # .search(where("date_to") >= datetime.utcnow())
             for u in d["participants"]
