@@ -69,7 +69,7 @@ async def user_areas(user_id: str, area_name: str):
                     thumb_url=v[0]["sector_thumb_url"],
                     location=get_crag_location(v[0]["sector_name"]),
                     todos=[
-                        schemas.TripTodo(**todo)
+                        schemas.BaseTodo(**todo)
                         for todo in sorted(
                             v, key=lambda d: (reversor(d["grade"]), d["name"])
                         )
