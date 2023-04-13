@@ -184,7 +184,7 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
         def grouper(d):
             for k, g in itertools.groupby(data, key=lambda d: d["app_url"]):
                 lg = list(g)
-                user_ids = [i["user_id"] for i in lg]
+                user_ids = [i["user_id"] for i in lg if "ascent_date" not in i]
                 # unpack all users comments
                 comments = [u for i in lg for u in i.get("comment", "")]
                 yield {
