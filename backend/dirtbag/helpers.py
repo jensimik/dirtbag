@@ -40,3 +40,29 @@ class reversor:
 
     def __lt__(self, other):
         return other.obj < self.obj
+
+
+yr_lookup = {
+    "Fontainebleau": "2-3018074",
+    "Albarracin": "2-3130679",
+    "Alcañiz": "2-3130606",
+    "Bohuslän": "2-2720857",
+    "Lofoten": "1-543929",
+    "Bodø": "1-269359",
+    "Magic Wood": "2-2661670",
+    "Göteborg": "2-2711537",
+    "Kjugekull": "2-2700743",
+    "Barcelona": "2-3128760",
+    "Chironico": "2-2661171",
+    "Rocklands": "2-3362340",
+    "Västervik": "2-2664203",
+    "Åland": "2-3041792",
+}
+
+
+def yr_data(area_name: str):
+    svg_temp = "https://www.yr.no/nb/innhold/{id}/meteogram.svg"
+    link_temp = "https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/{id})"
+    if yr_id := yr_lookup.get(area_name, ""):
+        return link_temp.format(id=yr_id), svg_temp.format(id=yr_id)
+    return None, None

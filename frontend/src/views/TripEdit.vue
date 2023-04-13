@@ -12,14 +12,14 @@ const pin = ref("");
 const data = ref({});
 
 const get_trip = async () => {
-    const trip_data = await TripMethodsAPI.get(props.id, pin.value);
+    const trip_data = await TripMethodsAPI.get(props.id);
     trip.value = trip_data;
     auth.value = true;
     data.value.date_from = trip_data.date_from;
     data.value.date_to = trip_data.date_to;
-    data.markdown = trip_data.markdown;
-    data.participants = trip_data.participants.map(item => item.user_id).join(',');
-    data.pin = trip_data.pin;
+    data.value.markdown = trip_data.markdown;
+    data.value.participants = trip_data.participants.map(item => item.user_id).join(',');
+    data.value.pin = trip_data.pin;
 }
 
 const saving = ref(false);

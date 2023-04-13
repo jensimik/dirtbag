@@ -38,11 +38,14 @@ try {
 <template>
     <Layout>
             <template v-slot:title>{{ trip.area_name }}</template>
-            <template v-slot:menu><router-link :to="{ name: 'trip_edit', params: { id: props.id, pin: props.pin } }"
+            <template v-slot:menu><router-link :to="{ name: 'trip_edit', params: { id: props.id } }"
                     class="button">edit</router-link></template>
             <template v-slot:content>
                 <div v-if="!loading">
         <div v-html="trip.markdown_html" class="markdown">
+        </div>
+        <div v-if="trip.yr_link">
+            <a :href="trip.yr_link"><img alt="yr.no" :src="trip.yr_svg"></a>
         </div>
         <div v-for="sector in trip.sectors" :key="sector.app_url">
             <h3><a :href="$isMobile() ? sector.app_url : sector.url">{{

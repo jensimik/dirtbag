@@ -65,6 +65,8 @@ class TripDB(BaseTrip):
 
 class Trip(BaseTrip):
     id: int
+    yr_link: Optional[str] = None
+    yr_svg: Optional[str] = None
     participants: list[User]
     sectors: list[Sector]
 

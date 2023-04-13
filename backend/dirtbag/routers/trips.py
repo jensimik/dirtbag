@@ -4,7 +4,7 @@ from datetime import datetime, date
 from tinydb import where
 from markdown import markdown
 from dirtbag import schemas
-from dirtbag.helpers import DB_trips, DB_todos, reversor, get_crag_location
+from dirtbag.helpers import DB_trips, DB_todos, reversor, get_crag_location, yr_data
 from dirtbag.c27_fetcher import refresh_27crags
 from dirtbag.config import settings
 
@@ -237,6 +237,7 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
             k: list(g)
             for k, g in itertools.groupby(grouped_data, key=lambda d: d["sector_name"])
         }
+        yr_link, yr_svg = yr_data(trip["area_name"])
         # return the data packed in a schemas.Trip
         return schemas.Trip(
             id=trip.doc_id,
@@ -245,6 +246,8 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
             date_to=trip["date_to"],
             markdown=trip.get("markdown", ""),
             markdown_html=markdown(trip.get("markdown", "")),
+            yr_link=yr_link,
+            yr_svg=yr_svg,
             participants=[schemas.User(**u) for u in trip["participants"]],
             sectors=[
                 schemas.Sector(
