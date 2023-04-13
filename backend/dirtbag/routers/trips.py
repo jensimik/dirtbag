@@ -11,81 +11,6 @@ from dirtbag.config import settings
 router = APIRouter(tags=["trips"])
 
 
-@router.get("/clean_data")
-async def clean_data():
-    async with DB_trips as db:
-        for trip in db:
-            if "area_name" not in trip:
-                db.remove(doc_ids=[trip.doc_id])
-
-
-@router.get("/create_data")
-async def create_data():
-    async with DB_trips as db:
-        db.drop_tables()
-        db.insert(
-            {
-                "area_name": "Bohuslän",
-                "date_from": date(2023, 5, 15).isoformat(),
-                "date_to": date(2023, 5, 22).isoformat(),
-                "pin": "1337",
-                "participants": [{"user_id": "jensda", "name": "JD"}],
-            }
-        )
-        db.insert(
-            {
-                "area_name": "Albarracin",
-                "date_from": date(2023, 3, 18).isoformat(),
-                "date_to": date(2023, 3, 25).isoformat(),
-                "pin": "1337",
-                "participants": [
-                    {"user_id": "jensda", "name": "JD"},
-                    {
-                        "user_id": "jacobthi",
-                        "name": "JT",
-                    },
-                    {
-                        "user_id": "nicklasn",
-                        "name": "NN",
-                    },
-                    {
-                        "user_id": "jeppe_rosenkrands",
-                        "name": "JR",
-                    },
-                ],
-            }
-        )
-        db.insert(
-            {
-                "area_name": "Albarracin",
-                "date_from": date(2023, 3, 6).isoformat(),
-                "date_to": date(2023, 3, 30).isoformat(),
-                "pin": "1337",
-                "participants": [{"user_id": "jensda", "name": "JD"}],
-            }
-        )
-        db.insert(
-            {
-                "area_name": "Fontainebleau",
-                "date_from": date(2023, 4, 6).isoformat(),
-                "date_to": date(2023, 4, 13).isoformat(),
-                "pin": "1337",
-                "participants": [
-                    {"user_id": "jensda", "name": "JD"},
-                ],
-            }
-        )
-        db.insert(
-            {
-                "area_name": "Magic Wood",
-                "date_from": date(2023, 6, 19).isoformat(),
-                "date_to": date(2023, 6, 26).isoformat(),
-                "pin": "1337",
-                "participants": [{"user_id": "jensda", "name": "JD"}],
-            }
-        )
-
-
 @router.post("/trips")
 async def new_trip(new_trip: schemas.TripDB, background_tasks: BackgroundTasks) -> int:
     async with DB_trips as db:
@@ -95,7 +20,7 @@ async def new_trip(new_trip: schemas.TripDB, background_tasks: BackgroundTasks) 
             "date_to": new_trip.date_to.isoformat(),
             "pin": new_trip.pin,
             "participants": [
-                {"user_id": user_id.strip(), "name": f"A{i}"}
+                {"user_id": user_id.strip().lower(), "name": f"A{i}"}
                 for i, user_id in enumerate(new_trip.participants.split(","))
             ],
         }
@@ -182,7 +107,7 @@ async def trip_update(
     old_set = {u["user_id"] for u in trip["participants"]}
     trip["participants"] = [
         {
-            "user_id": raw_user_id.strip(),
+            "user_id": raw_user_id.strip().lower(),
             "name": current_participants.get(raw_user_id.strip(), f"A{i}"),
         }
         for i, raw_user_id in enumerate(trip_update.participants.split(","))
