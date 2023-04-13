@@ -171,6 +171,7 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
             ),
             key=lambda d: d["app_url"],
         )
+        data = data + ticks
 
         # first group by app_url to make todos unique
         def grouper(d):
