@@ -1,68 +1,16 @@
 <script setup>
 import Layout from '../components/Layout.vue';
 import TripMethodsAPI from '../api/resources/TripMethods';
-//import WeatherMethodsAPI from '../api/resources/WeatherMethods';
 import { ref } from 'vue';
 import router from '../router';
-//import { boundingExtent, getCenter, buffer } from 'ol/extent';
 
 
-//import { Bar } from 'vue-chartjs'
-//import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, LineController, LineElement, CategoryScale, TimeScale, LinearScale, PointElement } from 'chart.js'
-//import 'chartjs-adapter-luxon';
-
-//ChartJS.register(Title, Tooltip, Legend, BarElement, LineController, LineElement, PointElement, CategoryScale, TimeScale, LinearScale)
-//const chartOptions = {
-//    plugins: {
-//        legend: {
-//            display: false,
-//        }
-//    },
-//    scales: {
-//        x: {
-//            type: 'time',
-//            time: {
-//                unit: 'hour',
-//                displayFormats: {
-//                    hour: 'HH:mm'
-//                },
-//            },
-//            title: {
-//                display: false,
-//                text: 'Date'
-//            },
-//            ticks: {
-//                major: {
-//                    enabled: true,
-//                },
-//                // autoSkip: false,
-//                maxRotation: 0,
-//            }
-//        },
-//        y: {
-//            title: {
-//                display: false,
-//                text: 'temperature C'
-//            }
-//        },
-//        yPrecipitation: {
-//            title: {
-//                display: false,
-//                text: 'precipitation mm'
-//            },
-//            position: 'right',
-//        }
-//    },
-//    responsive: true
-//}
-
-const props = defineProps(['id', 'pin']);
+const props = defineProps(['id']);
 
 const trip = ref({});
 const participants = ref({});
 const loading = ref(true);
 const error = ref(false);
-//const chartData = ref({});
 const getUniqueColor = (n) => {
     const rgb = [0, 0, 0];
 
@@ -74,61 +22,17 @@ const getUniqueColor = (n) => {
     return '#' + rgb.reduce((a, c) => (c > 0x0f ? c.toString(16) : '0' + c.toString(16)) + a, '')
 }
 try {
-    const trip_data = await TripMethodsAPI.get(props.id, props.pin);
+    const trip_data = await TripMethodsAPI.get(props.id);
     trip_data.participants.forEach((participant, i) => {
         participant.background_color = getUniqueColor(i);
         participants.value[participant.user_id] = participant;
     });
     trip.value = trip_data;
-//    const weatherData = await WeatherMethodsAPI.get(trip.value.sectors[0].name);
-//    chartData.value = {
-//        "labels": weatherData.x,
-//        "datasets": [
-//            {
-//                type: "line",
-//                label: "temperature",
-//                data: weatherData.temperature,
-//                borderColor: "red",
-//            },
-//            {
-//                type: "bar",
-//                label: "precipitation",
-//                data: weatherData.precipitation,
-//                // borderColor: "blue",
-//                backgroundColor: 'blue',
-//                yAxisID: "yPrecipitation"
-//            }
-//        ]
-//    }
     loading.value = false;
 } catch (e) {
     console.log(e);
-    error.value = "failed to auth";
-    router.push({ name: 'auth_trip', params: { id: props.id } });
 }
 
-// map settings
-//const locations = trip.value.sectors.map(sector => [sector.location[1], sector.location[0]]);
-//const map_extent = buffer(boundingExtent(locations), 0.05);
-//const center = ref(getCenter(map_extent));
-//const projection = ref("EPSG:4326");
-//const zoom = ref(10);
-//const rotation = ref(0);
-
-//const zoomChanged = async (currentZoom) => {
-//    zoom.value = currentZoom;
-//}
-
-//const view = ref(null);
-//const geoLocChange = (loc) => {
-//    console.log(loc);
-    // view.value.fit([loc[0], loc[1], loc[0], loc[1]], {
-    //     maxZoom: 14
-    // })
-//}
-//const getRndInteger = (min, max) => {
-//    return Math.floor(Math.random() * (max - min)) + min;
-//}
 </script>
 
 <template>
@@ -140,56 +44,6 @@ try {
                 <div v-if="!loading">
         <div v-html="trip.markdown_html" class="markdown">
         </div>
-<!--
-        <img v-if="trip.area_name == 'Alcañiz'" src="https://www.yr.no/nb/innhold/2-3130606/meteogram.svg" class="yrsvg"/>
-            <img v-if="trip.area_name == 'Albarracin'" src="https://www.yr.no/nb/innhold/2-3130679/meteogram.svg" class="yrsvg"/>
-            <img v-if="trip.area_name == 'Fontainebleau'" src="https://www.yr.no/nb/innhold/2-3018074/meteogram.svg" class="yrsvg"/>
-
--->
-        <!--         <div v-if="false">
-            <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
-            <div class="met_license">
-                <a href="https://www.met.no/en/free-meteorological-data/Licensing-and-crediting">forecast based on data
-                    from
-                    MET
-                    Norway</a>
-            </div>
-        </div>
- --><!--         <div>
-            <ol-map style="height:400px">
-                <ol-view ref="view" :center="center" :extent="map_extent" :projection="projection" />
-
-                <ol-attribution-control />
-                <ol-scaleline-control />
-                <ol-zoom-control />
-                <ol-zoomtoextent-control :extent="map_extent" tipLabel="Fit to Area" />
-                <ol-tile-layer>
-                    <ol-source-osm />
-                </ol-tile-layer>
-                <ol-overlay :stopEvent="false" :position="[sector.location[1], sector.location[0]]"
-                    v-for="(sector, i) in trip.sectors">
-                    <template v-slot="slotProps" id="test">
-                        <div class="marker" :style="{ transform: 'rotate(' + getRndInteger(-90, 90) + 'deg)' }">
-                            📍 {{ sector.name }}</div>
-                    </template>
-                </ol-overlay>
-                <ol-geolocation :projection="projection" @positionChanged="geoLocChange">
-                        <template v-slot="slotProps">
-                            <ol-vector-layer :zIndex="2">
-                                <ol-source-vector>
-                                    <ol-feature ref="positionFeature">
-                                        <ol-geom-point :coordinates="slotProps.position"></ol-geom-point>
-                                        <ol-style>
-                                            <ol-style-icon src="https://dirtbag.gnerd.dk/apple-touch-icon.png"
-                                                :scale="0.25"></ol-style-icon>
-                                        </ol-style>
-                                    </ol-feature>
-                                </ol-source-vector>
-                            </ol-vector-layer>
-                        </template>
-                    </ol-geolocation>
-            </ol-map>
-        </div> -->
         <div v-for="sector in trip.sectors" :key="sector.app_url">
             <h3><a :href="$isMobile() ? sector.app_url : sector.url">{{
                 sector.name

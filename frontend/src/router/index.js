@@ -15,19 +15,13 @@ const router = createRouter({
             component: () => import('../views/TripAdd.vue'),
         },
         {
-            path: '/auth/:id',
-            name: 'auth_trip',
-            component: () => import('../views/TripAuth.vue'),
-            props: true,
-        },
-        {
-            path: '/trip/:id/:pin',
-            name: 'trip_auth',
+            path: '/trip/:id',
+            name: 'trip_view',
             component: () => import('../views/TripView.vue'),
             props: true,
         },
         {
-            path: '/trip/:id/:pin/edit',
+            path: '/trip/:id/edit',
             name: 'trip_edit',
             component: () => import('../views/TripEdit.vue'),
             props: true,

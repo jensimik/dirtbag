@@ -133,24 +133,24 @@ async def trips() -> list[schemas.TripList]:
     return res
 
 
-@router.get("/trips/{trip_id}")
-async def trip_unauthed(trip_id):
-    async with DB_trips as db_trips:
-        trip = db_trips.get(doc_id=trip_id)
-        participants = [schemas.User(**u) for u in trip["participants"]]
-        trip["participants"] = participants
-        duration = (
-            date.fromisoformat(trip["date_to"]) - date.fromisoformat(trip["date_from"])
-        ).days
-        date_to_display = "{0: %d %b}".format(date.fromisoformat(trip["date_to"]))
-        date_from_display = "{0: %d %b}".format(date.fromisoformat(trip["date_from"]))
-    return schemas.TripList(
-        id=trip.doc_id,
-        duration=duration,
-        date_from_display=date_from_display,
-        date_to_display=date_to_display,
-        **trip,
-    )
+# @router.get("/trips/{trip_id}")
+# async def trip_unauthed(trip_id):
+#     async with DB_trips as db_trips:
+#         trip = db_trips.get(doc_id=trip_id)
+#         participants = [schemas.User(**u) for u in trip["participants"]]
+#         trip["participants"] = participants
+#         duration = (
+#             date.fromisoformat(trip["date_to"]) - date.fromisoformat(trip["date_from"])
+#         ).days
+#         date_to_display = "{0: %d %b}".format(date.fromisoformat(trip["date_to"]))
+#         date_from_display = "{0: %d %b}".format(date.fromisoformat(trip["date_from"]))
+#     return schemas.TripList(
+#         id=trip.doc_id,
+#         duration=duration,
+#         date_from_display=date_from_display,
+#         date_to_display=date_to_display,
+#         **trip,
+#     )
 
 
 @router.post("/trips/{trip_id}/{pin}/resync")
@@ -202,12 +202,10 @@ async def trip_update(
     return {"status": "OK"}
 
 
-@router.get("/trips/{trip_id}/{pin}")
-async def trip(trip_id: int, pin: str, response: Response) -> schemas.Trip:
+@router.get("/trips/{trip_id}")
+async def trip(trip_id: int, response: Response) -> schemas.Trip:
     async with (DB_trips as db_trips, DB_todos as db_todos):
         trip = db_trips.get(doc_id=trip_id)
-        if trip["pin"] != pin:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
 
         # get all todos for the trip area
         data = sorted(

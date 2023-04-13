@@ -25,7 +25,7 @@ trips.value = await TripMethodsAPI.index();
         </template>
         <template v-slot:content>
             <div class="flex three" v-for=" trip in trips" :key="trip.id">
-        <div><router-link :to="{ name: 'auth_trip', params: { id: trip.id } }">{{ trip.area_name }}</router-link></div>
+        <div><router-link :to="{ name: 'trip_view', params: { id: trip.id } }">{{ trip.area_name }}</router-link></div>
         <div>{{ trip.date_from_display }} -{{ trip.date_to_display }} ({{
             trip.duration ? trip.duration + ' days' :
                 'daytrip'

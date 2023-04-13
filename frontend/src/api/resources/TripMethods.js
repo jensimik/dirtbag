@@ -25,7 +25,7 @@ export default {
         }
     },
     async get(trip_id, pin) {
-        const response = await fetch(APISettings.baseURL + '/trips/' + trip_id + '/' + pin, {
+        const response = await fetch(APISettings.baseURL + '/trips/' + trip_id, {
             method: 'GET',
             headers: APISettings.headers
         });

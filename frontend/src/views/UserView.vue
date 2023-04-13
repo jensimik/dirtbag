@@ -6,12 +6,12 @@ const props = defineProps(['id'])
 const user = ref({});
 const areas = ref([]);
 
-user.value = await UserMethodsAPI.get(props.id);
+// user.value = await UserMethodsAPI.get(props.id);
 areas.value = await UserMethodsAPI.get_areas(props.id);
 </script>
 
 <template>
-    <h2><img class="thumb" :src="user.thumb_url" /> {{ user.name }}</h2>
+    <!-- <h2><img class="thumb" :src="user.thumb_url" /> {{ user.name }}</h2> -->
 
 
     <h3>Todos</h3>
