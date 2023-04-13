@@ -28,6 +28,7 @@ const save = async () => {
         alert("error - did you provide the correct edit code? and fill all fields correct?");
     }
     saving.value = false;
+    return false;
 }
 
 const remove = async () => {
@@ -37,6 +38,7 @@ const remove = async () => {
     } catch(error) {
         alert("error - did you put the correct edit code?");
     }
+    return false;
 }
 
 

@@ -62,7 +62,7 @@ yr_lookup = {
 
 def yr_data(area_name: str):
     svg_temp = "https://www.yr.no/nb/innhold/{id}/meteogram.svg"
-    link_temp = "https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/{id})"
+    link_temp = "https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/{id}"
     if yr_id := yr_lookup.get(area_name, ""):
         return link_temp.format(id=yr_id), svg_temp.format(id=yr_id)
     return None, None
