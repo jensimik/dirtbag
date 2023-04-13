@@ -4,8 +4,8 @@ import random
 from urllib.parse import urlparse
 from aiolimiter import AsyncLimiter
 from requests_html import HTML
-from datetime import datetime
-from .helpers import DB_27cache, DB_todos, DB_trips, where, tinydb_set
+from datetime import datetime, date, timedelta
+from .helpers import DB_27cache, DB_todos, DB_trips, DB_sends, where, tinydb_set
 from .config import settings
 
 rate_limit = AsyncLimiter(1, 15)
@@ -170,7 +170,79 @@ async def refresh_todo_list(
         )
 
 
-async def refresh_27crags(usernames: list[str], trip_id: int = None):
+async def refresh_tick_list(username: str, client: httpx.AsyncClient):
+    async with DB_27cache as db:
+        db.upsert(
+            {"user_id_lock": username, "locked": True},
+            where("user_id_lock") == username,
+        )
+    # now get the todo list
+    batch_id = datetime.utcnow().isoformat()
+    # be gentle with 27crags
+    await rate_limit.acquire()
+    r = await client.get(f"https://27crags.com/climbers/{username}/ascents")
+    if r.is_success:
+        print(f"got tick list of {username}")
+        html = HTML(html=r.content)
+        if todo_list := html.find("table.route-list tbody", first=True):
+            for tr in todo_list.find("tr"):
+                ascent_date = tr.find("td.ascent-date", first=True).text
+                grade = tr.find("span.grade", first=True).text
+                tds = tr.find("td.stxt")
+                link_element = tds[0].find("a", first=True)
+                link = link_element.attrs["href"]
+                name = link_element.text
+                print(f"fetching problem {name}")
+                url = "https://27crags.com" + link
+                app_url = await get_problem_data(problem_url=url, client=client)
+                sector_url = (
+                    "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
+                )
+                sector_name = tds[1].text
+                sector_data = await get_sector_data(
+                    sector_url=sector_url, client=client
+                )
+                unique_id = hashlib.md5(str.encode(f"{username}-{app_url}")).hexdigest()
+                area_name = (
+                    sector_data["area_name"]
+                    if sector_data["area_name"]
+                    else sector_name
+                )
+                area_url = (
+                    sector_data["area_url"] if sector_data["area_name"] else sector_url
+                )
+                data = {
+                    "id": unique_id,
+                    "user_id": username,
+                    "name": name,
+                    "grade": grade,
+                    "url": url,
+                    "app_url": app_url,
+                    "sector_name": sector_name,
+                    "sector_url": sector_url,
+                    "sector_app_url": sector_data["app_url"],
+                    "sector_thumb_url": sector_data["sector_thumb_url"],
+                    "area_name": area_name,
+                    "area_url": area_url,
+                    "ascent_date": ascent_date,
+                    "batch_id": batch_id,
+                }
+                async with DB_sends as db:
+                    db.upsert(data, where("id") == unique_id)
+    else:
+        print(f"error getting tick-list for {username}")
+    # clear out those not updated in the batch
+    async with DB_todos as db:
+        db.remove((where("user_id") == username) & (where("batch_id") < batch_id))
+    # clear simple sync lock
+    async with DB_27cache as db:
+        db.upsert(
+            {"user_id_lock": username, "locked": False},
+            where("user_id_lock") == username,
+        )
+
+
+async def refresh_27crags(usernames: list[str], trip_id: int = None, ticks=False):
     # async with DB_27cache as db:
     #     db.drop_tables()
     print("refreshing 27crags")
@@ -185,6 +257,8 @@ async def refresh_27crags(usernames: list[str], trip_id: int = None):
         for username in usernames:
             print(f"refreshing {username}")
             await refresh_todo_list(username=username, client=client, trip_id=trip_id)
+            if ticks:
+                await refresh_tick_list(username=username, client=client)
             print(f"done with {username}")
 
 
@@ -194,8 +268,11 @@ async def daily_resync():
         usernames = set(
             [
                 u["user_id"]
-                for d in db.search(where("date_to") >= datetime.utcnow().isoformat())
+                for d in db.search(
+                    where("date_to")
+                    >= datetime.utcnow().isoformat() - timedelta(days=2)
+                )
                 for u in d["participants"]
             ]
         )
-    await refresh_27crags(usernames=list(usernames))
+    await refresh_27crags(usernames=list(usernames), ticks=True)
