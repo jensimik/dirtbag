@@ -107,26 +107,34 @@ async def refresh_todo_list(
                 img_element = tr.find("img", first=True)
                 thumb_url = img_element.attrs["src"] if img_element else ""
                 ass = tr.find("td.stxt > a")
-                name = ass[1].text
+                name = ass[1 if thumb_url else 0].text
                 print(f"fetching problem {name}")
-                url = "https://27crags.com" + ass[1].attrs["href"]
+                url = "https://27crags.com" + ass[1 if thumb_url else 0].attrs["href"]
                 app_url = await get_problem_data(problem_url=url, client=client)
                 comment = []
-                if ascent_details := tr.find("td.stxt > div.ascent-details", first=True):
+                if ascent_details := tr.find(
+                    "td.stxt > div.ascent-details", first=True
+                ):
                     for link in ascent_details.find("a"):
                         _url = link.attrs["href"]
                         o = urlparse(_url)
-                        comment.append({"type": "link", "url": _url, "text": o.hostname})
+                        comment.append(
+                            {"type": "link", "url": _url, "text": o.hostname}
+                        )
                     if not comment:
                         comment = [{"type": "text", "text": ascent_details.text}]
                 sector_url = (
                     "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
                 )
                 sector_name = tds[1].text
-                sector_data = await get_sector_data(sector_url=sector_url, client=client)
+                sector_data = await get_sector_data(
+                    sector_url=sector_url, client=client
+                )
                 unique_id = hashlib.md5(str.encode(f"{username}-{app_url}")).hexdigest()
                 area_name = (
-                    sector_data["area_name"] if sector_data["area_name"] else sector_name
+                    sector_data["area_name"]
+                    if sector_data["area_name"]
+                    else sector_name
                 )
                 area_url = (
                     sector_data["area_url"] if sector_data["area_name"] else sector_url
