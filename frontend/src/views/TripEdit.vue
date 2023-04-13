@@ -21,14 +21,22 @@ data.value.participants = trip_data.participants.map(item => item.user_id).join(
 const saving = ref(false);
 const save = async () => {
     saving.value = true;
-    await TripMethodsAPI.update(props.id, pin.value, data.value);
-    router.push({name: "trip_view", params: {id: props.id}});
+    try {
+        await TripMethodsAPI.update(props.id, pin.value, data.value);
+        router.push({name: "trip_view", params: {id: props.id}});
+    } catch (error) {
+        alert("error - did you provide the correct edit code? and fill all fields correct?");
+    }
     saving.value = false;
 }
 
 const remove = async () => {
-    await TripMethodsAPI.remove(props.id, pin.value);
-    router.push({name: "home"});
+    try {
+        await TripMethodsAPI.remove(props.id, pin.value);
+        router.push({name: "home"});
+    } catch(error) {
+        alert("error - did you put the correct edit code?");
+    }
 }
 
 
