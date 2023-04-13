@@ -82,7 +82,6 @@ async def refresh_todo_list(
             {"user_id_lock": username, "locked": True},
             where("user_id_lock") == username,
         )
-
     # now get the todo list
     batch_id = datetime.utcnow().isoformat()
     # be gentle with 27crags
@@ -187,3 +186,13 @@ async def refresh_27crags(usernames: list[str], trip_id: int = None):
             print(f"refreshing {username}")
             await refresh_todo_list(username=username, client=client, trip_id=trip_id)
             print(f"done with {username}")
+
+
+async def daily_resync():
+    async with DB_trips as db:
+        usernames = (
+            u["user_id"]
+            for d in db.search(where("date_to") <= datetime.utcnow())
+            for u in d["participants"]
+        )
+    await refresh_27crags(usernames=list(usernames))

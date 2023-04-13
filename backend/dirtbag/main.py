@@ -5,6 +5,7 @@ from dirtbag.repeat_every_helper import repeat_every
 from .config import settings
 from dirtbag import __version__
 from .routers import trips, users, weather
+from .c27_fetcher import daily_resync
 
 
 if settings.sentry_dsn:
@@ -32,6 +33,7 @@ app.include_router(trips.router)
 app.include_router(users.router)
 app.include_router(weather.router)
 
+
 @app.get("/healtz")
 async def healtz():
     return {"everything": "is awesome"}
@@ -42,3 +44,4 @@ async def healtz():
 async def _maintenance():
     # todo clear out old trips automatic after trip is done?
     print("doing maintenance stuff")
+    await daily_resync()
