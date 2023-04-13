@@ -193,7 +193,7 @@ async def daily_resync():
     async with DB_trips as db:
         usernames = (
             u["user_id"]
-            for d in db.search(where("date_to") >= datetime.utcnow())
+            for d in db  # .search(where("date_to") >= datetime.utcnow())
             for u in d["participants"]
         )
     print(usernames)
