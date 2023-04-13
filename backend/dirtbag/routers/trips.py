@@ -41,10 +41,11 @@ async def new_trip(new_trip: schemas.TripDB, background_tasks: BackgroundTasks) 
 
 
 @router.get("/trips")
-async def trips() -> list[schemas.TripList]:
+async def trips() -> dict[str, list[schemas.TripList]]:
+    now = datetime.utcnow().isoformat()
     async with DB_trips as db_trips:
         data = sorted(db_trips, key=lambda d: d["date_from"])
-    res = []
+    res = {"current": [], "past": []}
     for trip in data:
         participants = [schemas.User(**u) for u in trip["participants"]]
         duration = (
@@ -53,7 +54,7 @@ async def trips() -> list[schemas.TripList]:
         trip["participants"] = participants
         date_to_display = "{0: %d %b}".format(date.fromisoformat(trip["date_to"]))
         date_from_display = "{0: %d %b}".format(date.fromisoformat(trip["date_from"]))
-        res.append(
+        res["current" if trip["date_to"] > now else "past"].append(
             schemas.TripList(
                 id=trip.doc_id,
                 duration=duration,

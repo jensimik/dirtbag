@@ -14,7 +14,7 @@ const getUniqueColor = (n) => {
     return '#' + rgb.reduce((a, c) => (c > 0x0f ? c.toString(16) : '0' + c.toString(16)) + a, '')
 }
 
-const trips = ref([]);
+const trips = ref({});
 trips.value = await TripMethodsAPI.index();
 </script>
 
@@ -24,18 +24,32 @@ trips.value = await TripMethodsAPI.index();
             <router-link :to="{ name: 'trip_add' }" class="button">create</router-link>
         </template>
         <template v-slot:content>
-            <div class="flex three" v-for=" trip in trips" :key="trip.id">
-        <div><router-link :to="{ name: 'trip_view', params: { id: trip.id } }">{{ trip.area_name }}</router-link></div>
-        <div>{{ trip.date_from_display }} -{{ trip.date_to_display }} ({{
-            trip.duration ? trip.duration + ' days' :
-                'daytrip'
-        }})</div>
-        <div class="right">
-            <span class="tag" :style="{ backgroundColor: getUniqueColor(i) }" v-for="(user, i) in trip.participants">{{
-                user.name
-            }}</span>
-        </div>
-    </div>
+            <h2>Current/Upcoming</h2>
+            <div class="flex three" v-for=" trip in trips.current" :key="trip.id">
+                <div><router-link :to="{ name: 'trip_view', params: { id: trip.id } }">{{ trip.area_name }}</router-link></div>
+                <div>{{ trip.date_from_display }} -{{ trip.date_to_display }} ({{
+                    trip.duration ? trip.duration + ' days' :
+                        'daytrip'
+                }})</div>
+                <div class="right">
+                    <span class="tag" :style="{ backgroundColor: getUniqueColor(i) }" v-for="(user, i) in trip.participants">{{
+                        user.name
+                    }}</span>
+                </div>
+            </div>
+            <h2>History</h2>
+            <div class="flex three" v-for=" trip in trips.past" :key="trip.id">
+                <div><router-link :to="{ name: 'trip_view', params: { id: trip.id } }">{{ trip.area_name }}</router-link></div>
+                <div>{{ trip.date_from_display }} -{{ trip.date_to_display }} ({{
+                    trip.duration ? trip.duration + ' days' :
+                        'daytrip'
+                }})</div>
+                <div class="right">
+                    <span class="tag" :style="{ backgroundColor: getUniqueColor(i) }" v-for="(user, i) in trip.participants">{{
+                        user.name
+                    }}</span>
+                </div>
+            </div>
         </template>
     </Layout>
 </template>
