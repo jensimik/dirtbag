@@ -245,26 +245,21 @@ async def refresh_tick_list(username: str, client: httpx.AsyncClient):
 async def refresh_27crags(usernames: list[str], trip_id: int = None, ticks=False):
     # async with DB_27cache as db:
     #     db.drop_tables()
-    try:
-        print("refreshing 27crags")
-        async with httpx.AsyncClient(
-            headers={"User-Agent": settings.httpx_user_agent}
-        ) as client:
-            if random.randint(0, 4) == 2:
-                r = await client.get("https://27crags.com/robots.txt")
-                if r.is_success:
-                    print("got robots.txt ok")
-                    print(r.content)
-            for username in usernames:
-                print(f"refreshing {username}")
-                await refresh_todo_list(
-                    username=username, client=client, trip_id=trip_id
-                )
-                if ticks:
-                    await refresh_tick_list(username=username, client=client)
-                print(f"done with {username}")
-    except Exception as ex:
-        print(f"failed with {ex}")
+    print("refreshing 27crags")
+    async with httpx.AsyncClient(
+        headers={"User-Agent": settings.httpx_user_agent}
+    ) as client:
+        if random.randint(0, 4) == 2:
+            r = await client.get("https://27crags.com/robots.txt")
+            if r.is_success:
+                print("got robots.txt ok")
+                print(r.content)
+        for username in usernames:
+            print(f"refreshing {username}")
+            await refresh_todo_list(username=username, client=client, trip_id=trip_id)
+            if ticks:
+                await refresh_tick_list(username=username, client=client)
+            print(f"done with {username}")
 
 
 async def daily_resync():
@@ -275,13 +270,9 @@ async def daily_resync():
                 u["user_id"]
                 for d in db.search(
                     where("date_to")
-                    >= datetime.utcnow().isoformat() - timedelta(days=2)
+                    >= (datetime.utcnow() - timedelta(days=2)).isoformat()
                 )
                 for u in d["participants"]
             ]
         )
-    try:
-        print(usernames)
-        await refresh_27crags(usernames=list(usernames), ticks=True)
-    except Exception as ex:
-        print(f"failed here {ex}")
+    await refresh_27crags(usernames=list(usernames), ticks=True)
