@@ -3,7 +3,7 @@ import hashlib
 import random
 from urllib.parse import urlparse
 from aiolimiter import AsyncLimiter
-from requests_html import HTML
+from requests_html import HTML, HtmlElement
 from datetime import datetime, date, timedelta
 from .helpers import DB_27cache, DB_todos, DB_trips, DB_sends, where, tinydb_set
 from .config import settings
@@ -15,24 +15,38 @@ def get_app_argument_from_html(html) -> str:
     meta_content = html.find("meta[name='apple-itunes-app']", first=True).attrs[
         "content"
     ]
-    og_image_element = html.find("meta[property='og:image']", first=True)
-    thumb_url = ""
-    if og_image_element:
-        thumb_url = og_image_element.attrs["content"]
-    return meta_content.split("app-argument=")[1], thumb_url
+    return meta_content.split("app-argument=")[1]
 
 
-async def get_problem_data(problem_url: str, client: httpx.AsyncClient) -> str:
-    #    async with DB_27cache as db:
-    #        data = db.get(where("problem_url") == problem_url)
-    #    if data:
-    #        return data["app_argument"], data.get("thumb_url")
-    # be gentle with 27crags
+async def get_thumb_url(element: HtmlElement) -> str:
+    img_element = element.find("img", first=True)
+    thumb_url = img_element.attrs["src"] if img_element else ""
+    return thumb_url
+
+
+async def get_problem_data(
+    problem_url: str, client: httpx.AsyncClient, element: HtmlElement
+) -> str:
+    async with DB_27cache as db:
+        data = db.get(where("problem_url") == problem_url)
+    if data:
+        thumb_url = data.get("thumb_url")
+        if not thumb_url:
+            thumb_url = await get_thumb_url(element)
+            async with DB_27cache as db:
+                db.update(
+                    tinydb_set(
+                        "thumb_url",
+                    )
+                )
+        return data["app_argument"], thumb_url
+    # # be gentle with 27crags
     await rate_limit.acquire()
     r = await client.get(problem_url)
     if r.is_success:
         # to get big image and canvas markup i have to be logged in for premium sites
-        app_argument, thumb_url = get_app_argument_from_html(html=HTML(html=r.content))
+        app_argument = get_app_argument_from_html(html=HTML(html=r.content))
+    thumb_url = await get_thumb_url(element)
     async with DB_27cache as db:
         data = db.upsert(
             {
@@ -111,13 +125,13 @@ async def refresh_todo_list(
             for tr in todo_list.find("tr"):
                 tds = tr.find("td.stxt")
                 grade = tr.find("td.grade", first=True).text
-                img_element = tr.find("img", first=True)
-                thumb_url = img_element.attrs["src"] if img_element else ""
                 ass = tr.find("td.stxt > a")
                 name = ass[1 if thumb_url else 0].text
                 print(f"fetching problem {name}")
                 url = "https://27crags.com" + ass[1 if thumb_url else 0].attrs["href"]
-                app_url, _ = await get_problem_data(problem_url=url, client=client)
+                app_url, thumb_url = await get_problem_data(
+                    problem_url=url, client=client, element=tr
+                )
                 comment = []
                 if ascent_details := tr.find(
                     "td.stxt > div.ascent-details", first=True
@@ -203,7 +217,7 @@ async def refresh_tick_list(username: str, client: httpx.AsyncClient):
                 print(f"fetching problem {name}")
                 url = "https://27crags.com" + link
                 app_url, thumb_url = await get_problem_data(
-                    problem_url=url, client=client
+                    problem_url=url, client=client, element=tr
                 )
                 sector_url = (
                     "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
@@ -228,7 +242,7 @@ async def refresh_tick_list(username: str, client: httpx.AsyncClient):
                     "grade": grade,
                     "url": url,
                     "app_url": app_url,
-                    "thumb_url": thumb_url if thumb_url else "",
+                    "thumb_url": "",
                     "sector_name": sector_name,
                     "sector_url": sector_url,
                     "sector_app_url": sector_data["app_url"],
