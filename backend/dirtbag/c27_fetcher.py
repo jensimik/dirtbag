@@ -242,7 +242,7 @@ async def refresh_tick_list(username: str, client: httpx.AsyncClient):
                     "grade": grade,
                     "url": url,
                     "app_url": app_url,
-                    "thumb_url": "",
+                    "thumb_url": thumb_url,
                     "sector_name": sector_name,
                     "sector_url": sector_url,
                     "sector_app_url": sector_data["app_url"],
