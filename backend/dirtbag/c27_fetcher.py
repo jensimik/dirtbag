@@ -20,10 +20,10 @@ def get_app_argument_from_html(html) -> str:
 
 
 async def get_problem_data(problem_url: str, client: httpx.AsyncClient) -> str:
-    async with DB_27cache as db:
-        data = db.get(where("problem_url") == problem_url)
-    if data:
-        return data["app_argument"], data.get("thumb_url")
+    #    async with DB_27cache as db:
+    #        data = db.get(where("problem_url") == problem_url)
+    #    if data:
+    #        return data["app_argument"], data.get("thumb_url")
     # be gentle with 27crags
     await rate_limit.acquire()
     r = await client.get(problem_url)
@@ -192,7 +192,7 @@ async def refresh_tick_list(username: str, client: httpx.AsyncClient):
         if todo_list := html.find("table.route-list tbody", first=True):
             for tr in todo_list.find("tr"):
                 ascent_date = tr.find("td.ascent-date", first=True).text
-                grade = tr.find("span.grade", first=True).text.upper()
+                grade = tr.find("span.grade")[-1].text.upper()
                 tds = tr.find("td.stxt")
                 link_element = tds[0].find("a", first=True)
                 link = link_element.attrs["href"]
