@@ -44,7 +44,7 @@ try {
                 <div v-if="!loading">
         <div v-html="trip.markdown_html" class="markdown">
         </div>
-        <div v-if="trip.yr_link">
+        <div id="yr" v-if="trip.yr_link">
             <a :href="trip.yr_link"><img alt="yr.no" :src="trip.yr_svg"></a>
         </div>
         <div v-for="sector in trip.sectors" :key="sector.app_url">
@@ -108,6 +108,9 @@ try {
 
 <style>
 .markdown img {
+    width: 100%;
+}
+#yr img {
     width: 100%;
 }
 </style>
