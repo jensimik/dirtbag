@@ -175,8 +175,8 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
             t
             for t in ticks
             if (
-                (t["ascent_date"] > trip["date_from"][:10])
-                & (t["ascent_date"] < trip["date_to"][:10])
+                (t["ascent_date"] >= trip["date_from"][:10])
+                & (t["ascent_date"] =< trip["date_to"][:10])
             )
         ]
 
