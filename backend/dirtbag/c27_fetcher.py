@@ -270,7 +270,7 @@ async def daily_resync():
                 u["user_id"]
                 for d in db.search(
                     where("date_to")
-                    >= (datetime.utcnow() - timedelta(days=2)).isoformat()
+                    >= (datetime.utcnow() - timedelta(days=102)).isoformat()
                 )
                 for u in d["participants"]
             ]
