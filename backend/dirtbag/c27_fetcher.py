@@ -15,23 +15,28 @@ def get_app_argument_from_html(html) -> str:
     meta_content = html.find("meta[name='apple-itunes-app']", first=True).attrs[
         "content"
     ]
-    return meta_content.split("app-argument=")[1]
+    thumb_url = html.find("meta[property='og:image']", first=True).attrs["content"]
+    return meta_content.split("app-argument=")[1], thumb_url
 
 
 async def get_problem_data(problem_url: str, client: httpx.AsyncClient) -> str:
     async with DB_27cache as db:
         data = db.get(where("problem_url") == problem_url)
     if data:
-        return data["app_argument"]
+        return data["app_argument"], data.get("thumb_url")
     # be gentle with 27crags
     await rate_limit.acquire()
     r = await client.get(problem_url)
     if r.is_success:
         # to get big image and canvas markup i have to be logged in for premium sites
-        app_argument = get_app_argument_from_html(html=HTML(html=r.content))
+        app_argument, thumb_url = get_app_argument_from_html(html=HTML(html=r.content))
     async with DB_27cache as db:
         data = db.upsert(
-            {"problem_url": problem_url, "app_argument": app_argument},
+            {
+                "problem_url": problem_url,
+                "app_argument": app_argument,
+                "thumb_url": thumb_url,
+            },
             where("problem_url") == problem_url,
         )
     return app_argument
@@ -109,7 +114,7 @@ async def refresh_todo_list(
                 name = ass[1 if thumb_url else 0].text
                 print(f"fetching problem {name}")
                 url = "https://27crags.com" + ass[1 if thumb_url else 0].attrs["href"]
-                app_url = await get_problem_data(problem_url=url, client=client)
+                app_url, _ = await get_problem_data(problem_url=url, client=client)
                 comment = []
                 if ascent_details := tr.find(
                     "td.stxt > div.ascent-details", first=True
@@ -187,14 +192,16 @@ async def refresh_tick_list(username: str, client: httpx.AsyncClient):
         if todo_list := html.find("table.route-list tbody", first=True):
             for tr in todo_list.find("tr"):
                 ascent_date = tr.find("td.ascent-date", first=True).text
-                grade = tr.find("span.grade", first=True).text
+                grade = tr.find("span.grade", first=True).text.upper()
                 tds = tr.find("td.stxt")
                 link_element = tds[0].find("a", first=True)
                 link = link_element.attrs["href"]
                 name = link_element.text
                 print(f"fetching problem {name}")
                 url = "https://27crags.com" + link
-                app_url = await get_problem_data(problem_url=url, client=client)
+                app_url, thumb_url = await get_problem_data(
+                    problem_url=url, client=client
+                )
                 sector_url = (
                     "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
                 )
@@ -218,6 +225,7 @@ async def refresh_tick_list(username: str, client: httpx.AsyncClient):
                     "grade": grade,
                     "url": url,
                     "app_url": app_url,
+                    "thumb_url": thumb_url if thumb_url else "",
                     "sector_name": sector_name,
                     "sector_url": sector_url,
                     "sector_app_url": sector_data["app_url"],
@@ -270,7 +278,7 @@ async def daily_resync():
                 u["user_id"]
                 for d in db.search(
                     where("date_to")
-                    >= (datetime.utcnow() - timedelta(days=102)).isoformat()
+                    >= (datetime.utcnow() - timedelta(days=2)).isoformat()
                 )
                 for u in d["participants"]
             ]
