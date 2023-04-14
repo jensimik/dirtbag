@@ -39,7 +39,7 @@ async def get_problem_data(problem_url: str, client: httpx.AsyncClient) -> str:
             },
             where("problem_url") == problem_url,
         )
-    return app_argument
+    return app_argument, thumb_url
 
 
 async def get_sector_data(sector_url: str, client: httpx.AsyncClient) -> dict:
