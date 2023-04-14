@@ -15,7 +15,10 @@ def get_app_argument_from_html(html) -> str:
     meta_content = html.find("meta[name='apple-itunes-app']", first=True).attrs[
         "content"
     ]
-    thumb_url = html.find("meta[property='og:image']", first=True).attrs["content"]
+    og_image_element = html.find("meta[property='og:image']", first=True)
+    thumb_url = ""
+    if og_image_element:
+        thumb_url = og_image_element.attrs["content"]
     return meta_content.split("app-argument=")[1], thumb_url
 
 
