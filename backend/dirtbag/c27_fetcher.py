@@ -127,9 +127,10 @@ async def refresh_todo_list(
                 tds = tr.find("td.stxt")
                 grade = tr.find("td.grade", first=True).text
                 ass = tr.find("td.stxt > a")
-                name = ass[1 if thumb_url else 0].text
+                img_element = tr.find("img", first=True)
+                name = ass[1 if img_element else 0].text
                 print(f"fetching problem {name}")
-                url = "https://27crags.com" + ass[1 if thumb_url else 0].attrs["href"]
+                url = "https://27crags.com" + ass[1 if img_element else 0].attrs["href"]
                 app_url, thumb_url = await get_problem_data(
                     problem_url=url, client=client, element=tr
                 )
