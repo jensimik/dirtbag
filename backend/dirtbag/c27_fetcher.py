@@ -37,7 +37,8 @@ async def get_problem_data(
                 db.update(
                     tinydb_set(
                         "thumb_url",
-                    )
+                    ),
+                    where("problem_url") == problem_url,
                 )
         return data["app_argument"], thumb_url
     # # be gentle with 27crags
