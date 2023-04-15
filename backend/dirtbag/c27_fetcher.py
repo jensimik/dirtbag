@@ -36,9 +36,7 @@ async def get_problem_data(
             print(f"found thumb_url {thumb_url}")
             async with DB_27cache as db:
                 db.update(
-                    tinydb_set(
-                        "thumb_url",
-                    ),
+                    tinydb_set("thumb_url", thumb_url),
                     where("problem_url") == problem_url,
                 )
         return data["app_argument"], thumb_url
