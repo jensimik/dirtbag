@@ -203,7 +203,7 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
                 comments = [u for i in lg for u in i.get("comment", "")]
                 yield {
                     **lg[0],
-                    "user_ids": user_ids,
+                    "user_ids": [] if is_past_trip else user_ids,
                     "ticks": user_ids if is_past_trip else ticks_by_app_url.get(k, []),
                     "comments": comments,
                 }
