@@ -31,9 +31,9 @@ async def get_problem_data(
         data = db.get(where("problem_url") == problem_url)
     if data:
         thumb_url = data.get("thumb_url")
-        if not thumb_url:
+        if True:  # not thumb_url:
             thumb_url = await get_thumb_url(element)
-            print("found thumb_url {thumb_url}")
+            print(f"found thumb_url {thumb_url}")
             async with DB_27cache as db:
                 db.update(
                     tinydb_set(
