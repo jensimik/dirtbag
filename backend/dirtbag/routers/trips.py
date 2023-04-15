@@ -163,8 +163,10 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
             for k, g in itertools.groupby(ticks, key=lambda d: d["app_url"])
         }
 
+        is_past_trip = trip["date_to"] < date.today().isoformat()
+
         # get all todos for the trip area
-        if trip["date_to"] < date.today().isoformat():
+        if is_past_trip:
             data = []
             yr_link, yr_svg = "", ""
         else:
@@ -197,7 +199,7 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
                 yield {
                     **lg[0],
                     "user_ids": user_ids,
-                    "ticks": ticks_by_app_url.get(k, []),
+                    "ticks": ticks_by_app_url.get(k, []) if not is_past_trip else [],
                     "comments": comments,
                 }
 
