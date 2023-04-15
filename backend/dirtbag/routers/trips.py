@@ -164,13 +164,18 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
         }
 
         # get all todos for the trip area
-        data = sorted(
-            db_todos.search(
-                (where("area_name") == trip["area_name"])
-                & where("user_id").one_of([u["user_id"] for u in trip["participants"]])
-            ),
-            key=lambda d: d["app_url"],
-        )
+        if trip["date_to"] < date.today().isoformat():
+            data = []
+        else:
+            data = sorted(
+                db_todos.search(
+                    (where("area_name") == trip["area_name"])
+                    & where("user_id").one_of(
+                        [u["user_id"] for u in trip["participants"]]
+                    )
+                ),
+                key=lambda d: d["app_url"],
+            )
         data = data + [
             t
             for t in ticks
