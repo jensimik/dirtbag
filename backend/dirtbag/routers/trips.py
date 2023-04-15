@@ -180,6 +180,7 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
                 ),
                 key=lambda d: d["app_url"],
             )
+        # concat todos and ticks together (only take the ticks during the trip)
         data = data + [
             t
             for t in ticks
@@ -199,7 +200,7 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
                 yield {
                     **lg[0],
                     "user_ids": user_ids,
-                    "ticks": ticks_by_app_url.get(k, []) if not is_past_trip else [],
+                    "ticks": user_ids if is_past_trip else ticks_by_app_url.get(k, []),
                     "comments": comments,
                 }
 
