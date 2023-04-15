@@ -166,7 +166,9 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
         # get all todos for the trip area
         if trip["date_to"] < date.today().isoformat():
             data = []
+            yr_link, yr_svg = "", ""
         else:
+            yr_link, yr_svg = yr_data(trip["area_name"])
             data = sorted(
                 db_todos.search(
                     (where("area_name") == trip["area_name"])
@@ -207,7 +209,6 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
             k: list(g)
             for k, g in itertools.groupby(grouped_data, key=lambda d: d["sector_name"])
         }
-        yr_link, yr_svg = yr_data(trip["area_name"])
         # return the data packed in a schemas.Trip
         return schemas.Trip(
             id=trip.doc_id,
