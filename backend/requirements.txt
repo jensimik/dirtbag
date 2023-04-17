@@ -30,7 +30,7 @@ mypy-extensions==1.0.0
 packaging==23.0
 parse==1.19.0
 pathspec==0.11.1
-platformdirs==3.1.1
+platformdirs==3.2.0
 pydantic==1.10.7
 pyee==8.2.2
 pyppeteer==1.0.2
