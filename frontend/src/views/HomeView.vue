@@ -26,7 +26,6 @@ trips.value = await TripMethodsAPI.index();
             <router-link :to="{ name: 'trip_add' }" class="button">create</router-link>
         </template>
         <template v-slot:content>
-            <p>This is an app to make the 27crags todo lists more useful on trips. Features: see todo's for an area/trip, ordered by sector, and joined list by all members on the trip.</p>
             <h2>Current/Upcoming</h2>
             <div class="flex three" v-for=" trip in trips.current" :key="trip.id">
                 <div><router-link :to="{ name: 'trip_view', params: { id: trip.id } }">{{ trip.area_name }}</router-link></div>

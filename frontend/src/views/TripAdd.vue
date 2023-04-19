@@ -48,10 +48,9 @@ const create_trip = async () => {
 
 <template>
     <Layout>
+        <template v-slot:title>create trip</template>
         <template v-slot:content>
-            <h2>Create trip</h2>
-
-            <div>
+            <div class="flex one">
                 <label for="date_from">Date from</label>
                 <input type="date" id="date_from" v-model="data.date_from" pattern="\d{4}-\d{2}-\d{2}" />
                 <label for="date_to">Date to</label>
