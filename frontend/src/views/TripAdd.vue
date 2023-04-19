@@ -19,7 +19,7 @@ const makeid = function(length) {
 
 const data = ref({ date_from: "", date_to: "", user_id: "", area_name: "", participants: "", "pin": makeid(4) });
 const processing = ref(false);
-const sync_text = ref("sync 27 crags");
+const sync_text = ref("** sync 27 crags");
 const synced = ref(false);
 const areas = ref([]);
 
@@ -55,7 +55,7 @@ const create_trip = async () => {
                 <input type="date" id="date_from" v-model="data.date_from" pattern="\d{4}-\d{2}-\d{2}" />
                 <label for="date_to">Date to</label>
                 <input type="date" id="date_to" v-model="data.date_to" pattern="\d{4}-\d{2}-\d{2}" />
-                <label for="user_id">27crags user_name</label>
+                <label for="user_id">27crags user_name *</label>
                 <input type="text" id="user_id" v-model="data.user_id" :readonly="processing"
                     placeholder="find username when logging in to 27crags in a browser and look in the url address" />
                 <div class="flex two" v-if="!synced">
@@ -82,6 +82,8 @@ const create_trip = async () => {
                         </div>
                     </div>
                 </div>
+                <p>* find the username when logging in to 27crags in a browser, navigate to your profile and look in the url address line <img src="/username.jpeg" id="imghelp"></p>
+                <p>** first sync can take a long time if you have many todos/ticks - start the process and return next day</p>
             </div>
         </template>
     </Layout>
@@ -90,5 +92,8 @@ const create_trip = async () => {
 <style scoped>
 .right {
     text-align: right;
+}
+#imghelp {
+    width: 100%;
 }
 </style>
