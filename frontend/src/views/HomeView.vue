@@ -60,6 +60,7 @@ trips.value = await TripMethodsAPI.index();
                     <span v-if="trip.participants.length > 5" class="tag">+{{ trip.participants.length - 5 }}</span>
                 </div>
             </div>
+            <p>this is an effort to make the 27crags todo lists more useful. see a joined todo-list of a group for an area, ordered by sectors and grades (and see who in the group already sent your projects?). bugs/info/etc contact jens@dirtbag.dk</p>
         </template>
     </Layout>
 </template>
