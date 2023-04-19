@@ -30,27 +30,35 @@ trips.value = await TripMethodsAPI.index();
             <h2>Current/Upcoming</h2>
             <div class="flex three" v-for=" trip in trips.current" :key="trip.id">
                 <div><router-link :to="{ name: 'trip_view', params: { id: trip.id } }">{{ trip.area_name }}</router-link></div>
-                <div>{{ trip.date_from_display }} -{{ trip.date_to_display }} ({{
+                <div v-if="$isMobile()">{{ trip.date_from_display.replace(/\s+/g, '').toLowerCase() }}+{{ trip.duration }}d</div>
+                <div v-else>
+                    {{ trip.date_from_display }} -{{ trip.date_to_display }} ({{
                     trip.duration ? trip.duration + ' days' :
                         'daytrip'
-                }})</div>
+                }})
+                </div>
                 <div class="right">
-                    <span class="tag" :style="{ backgroundColor: getUniqueColor(i) }" v-for="(user, i) in trip.participants">{{
+                    <span class="tag" :style="{ backgroundColor: getUniqueColor(i) }" v-for="(user, i) in trip.participants.slice(0,5)">{{
                         user.name
                     }}</span>
+                    <span v-if="trip.participants.length > 5" class="tag">+{{ trip.participants.length - 5 }}</span>
                 </div>
             </div>
             <h2>History</h2>
             <div class="flex three" v-for=" trip in trips.past" :key="trip.id">
                 <div><router-link :to="{ name: 'trip_view', params: { id: trip.id } }">{{ trip.area_name }}</router-link></div>
-                <div>{{ trip.date_from_display }} -{{ trip.date_to_display }} ({{
+                <div v-if="$isMobile()">{{ trip.date_from_display.replace(/\s+/g, '').toLowerCase() }}+{{ trip.duration }}d</div>
+                <div v-else>
+                    {{ trip.date_from_display }} -{{ trip.date_to_display }} ({{
                     trip.duration ? trip.duration + ' days' :
                         'daytrip'
-                }})</div>
+                }})                    
+                </div>
                 <div class="right">
-                    <span class="tag" :style="{ backgroundColor: getUniqueColor(i) }" v-for="(user, i) in trip.participants">{{
+                    <span class="tag" :style="{ backgroundColor: getUniqueColor(i) }" v-for="(user, i) in trip.participants.slice(0,5)">{{
                         user.name
                     }}</span>
+                    <span v-if="trip.participants.length > 5" class="tag">+{{ trip.participants.length - 5 }}</span>
                 </div>
             </div>
         </template>
@@ -66,9 +74,9 @@ span.tag {
     font-size: 0.8em;
     border-radius: 50%;
     color: #fff;
-    /* padding: 0.5em; */
+    /* overlap a bit */
+    margin-left: -0.5em;
 }
-
 
 img.thumb {
     width: 1.5em;
@@ -79,5 +87,10 @@ img.thumb {
 div.right {
     text-align: right;
     /* justify-content: flex-end; */
+}
+@media only screen and (max-width: 600px) {
+    span.tag {
+        margin-left: -0.8em;
+    }
 }
 </style>
