@@ -170,14 +170,14 @@ div.comment span.comment {
 }
 
 div.todo_title {
-    flex-basis: calc(100% - 8em);
+    flex-basis: calc(100% - 10em);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 div.participants {
-    flex-basis: 5em;
+    flex-basis: 7em;
     text-align: right;
 }
 
