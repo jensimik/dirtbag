@@ -130,7 +130,7 @@ span.tag {
     border-radius: 50%;
     color: #fff;
     /* overlap a bit */
-    margin-left: -0.5em;
+    margin-left: -0.6em;
 }
 
 .right {
