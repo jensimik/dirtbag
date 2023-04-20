@@ -149,9 +149,13 @@ async def refresh_todo_list(
                     "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
                 )
                 sector_name = tds[1].text
-                sector_data = await get_sector_data(
-                    sector_url=sector_url, client=client
-                )
+                try:
+                    sector_data = await get_sector_data(
+                        sector_url=sector_url, client=client
+                    )
+                except Exception:
+                    print(f"could not find sector_data for {sector_name}")
+                    continue
                 unique_id = hashlib.md5(str.encode(f"{username}-{app_url}")).hexdigest()
                 area_name = (
                     sector_data["area_name"]
