@@ -24,7 +24,7 @@ idna==3.4
 importlib-metadata==6.5.0
 libgravatar==1.0.4
 lxml==4.9.2
-Markdown==3.4.1
+Markdown==3.4.3
 metno-locationforecast==1.1.0
 mypy-extensions==1.0.0
 packaging==23.1
