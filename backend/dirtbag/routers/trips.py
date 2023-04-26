@@ -181,14 +181,18 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
                 key=lambda d: d["app_url"],
             )
         # concat todos and ticks together (only take the ticks during the trip)
-        data = data + [
-            t
-            for t in ticks
-            if (
-                (t["ascent_date"] >= trip["date_from"][:10])
-                & (t["ascent_date"] <= trip["date_to"][:10])
-            )
-        ]
+        data = sorted(
+            data
+            + [
+                t
+                for t in ticks
+                if (
+                    (t["ascent_date"] >= trip["date_from"][:10])
+                    & (t["ascent_date"] <= trip["date_to"][:10])
+                )
+            ],
+            key=lambda d: d["app_url"],
+        )
 
         # first group by app_url to make todos unique
         def grouper(d):
