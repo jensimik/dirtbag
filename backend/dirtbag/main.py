@@ -40,7 +40,7 @@ async def healtz():
 
 
 @app.on_event("startup")
-@repeat_every(seconds=60 * 60 * 24)
+@repeat_every(seconds=60 * 60 * 12)
 async def _maintenance():
     # todo clear out old trips automatic after trip is done?
     print("doing maintenance stuff")
