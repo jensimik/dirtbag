@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dirtbag.repeat_every_helper import repeat_every
 from .config import settings
 from dirtbag import __version__
-from .routers import trips, users, weather
+from .routers import trips, users
 from .c27_fetcher import daily_resync
 
 
@@ -31,7 +31,6 @@ app.add_middleware(
 
 app.include_router(trips.router)
 app.include_router(users.router)
-app.include_router(weather.router)
 
 
 @app.get("/healtz")
