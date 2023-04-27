@@ -16,20 +16,6 @@ DB_sends = AIOTinyDB(settings.db_file_sends)
 MODULE_DIR = pathlib.Path(__file__).resolve().parent
 
 
-@lru_cache
-def get_crags():
-    with open(MODULE_DIR / "all_crags.json", "r") as f:
-        return {
-            crag["name"]: (float(crag["latitude"]), float(crag["longitude"]))
-            for crag in json.load(f)["crags"]
-        }
-
-
-# get location by sector name
-def get_crag_location(sector_name):
-    return get_crags().get(sector_name, (None, None))
-
-
 # to sort things in reverse order
 class reversor:
     def __init__(self, obj):

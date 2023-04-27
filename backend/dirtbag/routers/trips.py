@@ -9,7 +9,6 @@ from dirtbag.helpers import (
     DB_todos,
     DB_sends,
     reversor,
-    get_crag_location,
     yr_data,
 )
 from dirtbag.c27_fetcher import refresh_27crags
@@ -237,7 +236,6 @@ async def trip(trip_id: int, response: Response) -> schemas.Trip:
                     url=v[0]["sector_url"],
                     app_url=v[0]["sector_app_url"],
                     thumb_url=v[0]["sector_thumb_url"],
-                    location=get_crag_location(v[0]["sector_name"]),
                     todos=[
                         schemas.TripTodo(**todo)
                         for todo in sorted(

@@ -39,7 +39,6 @@ class Sector(BaseModel):
     url: str
     app_url: str
     thumb_url: str
-    location: tuple[float, float]
     todos: list[Union[TripTodo, BaseTodo]]
 
 
