@@ -20,8 +20,9 @@ sectors.value = data.sectors
             <div v-for="sector in sectors" :key="sector.app_url">
                 <h3><a :href="$isMobile() ? sector.app_url : sector.url">{{
                     sector.name
-                }}</a><a
-                        :href="'https://maps.google.com/?q=@' + sector.location[0] + ',' + sector.location[1] + ',10z'">📍</a>
+                }}</a>
+                <!-- <a
+                        :href="'https://maps.google.com/?q=@' + sector.location[0] + ',' + sector.location[1] + ',10z'">📍</a> -->
                 </h3>
                 <div v-for="todo in sector.todos">
                     <div class="flex grow todo_line">
