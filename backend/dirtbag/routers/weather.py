@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Request, HTTPException, status
 from datetime import datetime, date
 from dirtbag import schemas
-from metno_locationforecast import Place, Forecast
+
+# from metno_locationforecast import Place, Forecast
 
 # from dirtbag.helpers import get_crag_location
 from dirtbag.config import settings
