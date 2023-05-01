@@ -11,7 +11,7 @@ from .c27_fetcher import daily_resync
 if settings.sentry_dsn:
     sentry_sdk.init(
         dsn=settings.sentry_dsn,
-        traces_sample_rate=0.1,
+        traces_sample_rate=0,
         release=__version__,
     )
 
