@@ -1,12 +1,14 @@
-import httpx
 import hashlib
 import random
+from datetime import date, datetime, timedelta
 from urllib.parse import urlparse
+
+import httpx
 from aiolimiter import AsyncLimiter
-from requests_html import HTML, HtmlElement
-from datetime import datetime, date, timedelta
-from .helpers import DB_27cache, DB_todos, DB_trips, DB_sends, where, tinydb_set
+
 from .config import settings
+from .helpers import DB_27cache, DB_sends, DB_todos, DB_trips, tinydb_set, where
+from .parse import HTML, HtmlElement
 
 rate_limit = AsyncLimiter(1, 15)
 
