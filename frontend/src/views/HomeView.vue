@@ -61,6 +61,7 @@ trips.value = await TripMethodsAPI.index();
                 </div>
             </div>
             <p>this is an effort to make the 27crags todo lists more useful. see a combined todo-list for a group of ppl, ordered by sectors and grades (and see who in the group already sent your projects?). bugs/info/etc contact jens@dirtbag.dk</p>
+            <p>idea: "live" mode when at the crag see the todo-list live-updated with nearest boulders (require premium data on the bouleders though)</p>
         </template>
     </Layout>
 </template>
