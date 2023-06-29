@@ -63,9 +63,7 @@ async def trips() -> dict[str, list[schemas.TripList]]:
             )
         )
         # sort past trips in reverse order
-        res["past"] = sorted(
-            res["past"], key=lambda d: d.date_from_display, reverse=True
-        )
+        res["past"] = sorted(res["past"], key=lambda d: d.date_from, reverse=True)
     return res
 
 
