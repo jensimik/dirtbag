@@ -1,7 +1,7 @@
 aiofiles==23.1.0
 aiolimiter==1.1.0
 aiotinydb==2.0.0
-anyio==3.7.0
+anyio==3.7.1
 appdirs==1.4.4
 beautifulsoup4==4.12.2
 Brotli==1.0.9
