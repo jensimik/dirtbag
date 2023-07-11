@@ -127,8 +127,9 @@ async def refresh_todo_list(
             for tr in todo_list.find("tr"):
                 tds = tr.find("td.stxt")
                 grade = tr.find("td.grade", first=True).text
-                ass = tr.find("td.stxt > a")
-                img_element = tr.find("img", first=True)
+                first_td = tr.find("td", first=True)
+                ass = first_td.find("a")
+                img_element = first_td.find("img", first=True)
                 name = ass[1 if img_element else 0].text
                 print(f"fetching problem {name}")
                 url = "https://27crags.com" + ass[1 if img_element else 0].attrs["href"]
