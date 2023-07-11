@@ -1,12 +1,14 @@
 import sentry_sdk
+from dirtbag.repeat_every_helper import repeat_every
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from dirtbag.repeat_every_helper import repeat_every
-from .config import settings
-from dirtbag import __version__
-from .routers import trips, users
-from .c27_fetcher import daily_resync
 
+from dirtbag import __version__
+
+from .c27_fetcher import daily_resync
+from .config import settings
+from .helpers import DB_27cache, DB_sends, DB_todos, where
+from .routers import trips, users
 
 if settings.sentry_dsn:
     sentry_sdk.init(
@@ -44,3 +46,11 @@ async def _maintenance():
     # todo clear out old trips automatic after trip is done?
     print("doing maintenance stuff")
     await daily_resync()
+
+
+@app.get("/fixup")
+async def fixup():
+    async with DB_todos as db:
+        db.delete(where("name") == "")
+    async with DB_sends as db:
+        db.delete(where("name") == "")
