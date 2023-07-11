@@ -7,7 +7,8 @@ from dirtbag import __version__
 
 from .c27_fetcher import daily_resync
 from .config import settings
-from .helpers import DB_27cache, DB_sends, DB_todos, where
+
+# from .helpers import DB_27cache, DB_sends, DB_todos, where
 from .routers import trips, users
 
 if settings.sentry_dsn:
@@ -48,10 +49,10 @@ async def _maintenance():
     await daily_resync()
 
 
-@app.get("/fixup")
-async def fixup():
-    async with DB_todos as db:
-        db.remove(where("name") == "")
-    async with DB_sends as db:
-        db.remove(where("name") == "")
-        db.remove(where("thumb_url") == "")
+# @app.get("/fixup")
+# async def fixup():
+#     async with DB_todos as db:
+#         db.remove(where("name") == "")
+#     async with DB_sends as db:
+#         db.remove(where("name") == "")
+#         db.remove(where("thumb_url") == "")

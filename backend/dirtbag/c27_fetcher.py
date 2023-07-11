@@ -216,54 +216,65 @@ async def refresh_tick_list(username: str, client: httpx.AsyncClient):
         html = HTML(html=r.content)
         if todo_list := html.find("table.route-list tbody", first=True):
             for tr in todo_list.find("tr"):
-                ascent_date = tr.find("td.ascent-date", first=True).text
-                grade = tr.find("span.grade")[-1].text.upper()
-                tds = tr.find("td.stxt")
-                first_td = tr.find("td", first=True)
-                ass = first_td.find("a")
-                img_element = first_td.find("img", first=True)
-                name = ass[1 if img_element else 0].text
-                print(f"fetching problem {name}")
-                url = "https://27crags.com" + ass[1 if img_element else 0].attrs["href"]
-                print(f"fetching problem {name}")
-                app_url, thumb_url = await get_problem_data(
-                    problem_url=url, client=client, element=tr
-                )
-                sector_url = (
-                    "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
-                )
-                sector_name = tds[1].text
-                sector_data = await get_sector_data(
-                    sector_url=sector_url, client=client
-                )
-                unique_id = hashlib.md5(str.encode(f"{username}-{app_url}")).hexdigest()
-                area_name = (
-                    sector_data["area_name"]
-                    if sector_data["area_name"]
-                    else sector_name
-                )
-                area_url = (
-                    sector_data["area_url"] if sector_data["area_name"] else sector_url
-                )
-                data = {
-                    "id": unique_id,
-                    "user_id": username,
-                    "name": name,
-                    "grade": grade,
-                    "url": url,
-                    "app_url": app_url,
-                    "thumb_url": thumb_url,
-                    "sector_name": sector_name,
-                    "sector_url": sector_url,
-                    "sector_app_url": sector_data["app_url"],
-                    "sector_thumb_url": sector_data["sector_thumb_url"],
-                    "area_name": area_name,
-                    "area_url": area_url,
-                    "ascent_date": ascent_date,
-                    "batch_id": batch_id,
-                }
-                async with DB_sends as db:
-                    db.upsert(data, where("id") == unique_id)
+                try:
+                    ascent_date = tr.find("td.ascent-date", first=True).text
+                    grade = tr.find("span.grade")[-1].text.upper()
+                    tds = tr.find("td.stxt")
+                    first_td = tr.find("td", first=True)
+                    ass = first_td.find("a")
+                    img_element = first_td.find("img", first=True)
+                    name = ass[1 if img_element else 0].text
+                    print(f"fetching problem {name}")
+                    url = (
+                        "https://27crags.com"
+                        + ass[1 if img_element else 0].attrs["href"]
+                    )
+                    print(f"fetching problem {name}")
+                    app_url, thumb_url = await get_problem_data(
+                        problem_url=url, client=client, element=tr
+                    )
+                    sector_url = (
+                        "https://27crags.com"
+                        + tds[1].find("a", first=True).attrs["href"]
+                    )
+                    sector_name = tds[1].text
+                    sector_data = await get_sector_data(
+                        sector_url=sector_url, client=client
+                    )
+                    unique_id = hashlib.md5(
+                        str.encode(f"{username}-{app_url}")
+                    ).hexdigest()
+                    area_name = (
+                        sector_data["area_name"]
+                        if sector_data["area_name"]
+                        else sector_name
+                    )
+                    area_url = (
+                        sector_data["area_url"]
+                        if sector_data["area_name"]
+                        else sector_url
+                    )
+                    data = {
+                        "id": unique_id,
+                        "user_id": username,
+                        "name": name,
+                        "grade": grade,
+                        "url": url,
+                        "app_url": app_url,
+                        "thumb_url": thumb_url,
+                        "sector_name": sector_name,
+                        "sector_url": sector_url,
+                        "sector_app_url": sector_data["app_url"],
+                        "sector_thumb_url": sector_data["sector_thumb_url"],
+                        "area_name": area_name,
+                        "area_url": area_url,
+                        "ascent_date": ascent_date,
+                        "batch_id": batch_id,
+                    }
+                    async with DB_sends as db:
+                        db.upsert(data, where("id") == unique_id)
+                except Exception as ex:
+                    print(f"tick-fetch failed with {ex}")
     else:
         print(f"error getting tick-list for {username}")
     # clear out those not updated in the batch
