@@ -148,7 +148,8 @@ async def refresh_todo_list(
                     if not comment:
                         comment = [{"type": "text", "text": ascent_details.text}]
                 sector_url = (
-                    "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
+                    "https://27crags.com"
+                    + tr.find("td.stxt", first=True).find("a", first=True).attrs["href"]
                 )
                 sector_name = tr.find("td.stxt", first=True).text
                 try:
