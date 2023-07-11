@@ -219,11 +219,13 @@ async def refresh_tick_list(username: str, client: httpx.AsyncClient):
                 ascent_date = tr.find("td.ascent-date", first=True).text
                 grade = tr.find("span.grade")[-1].text.upper()
                 tds = tr.find("td.stxt")
-                link_element = tds[0].find("a", first=True)
-                link = link_element.attrs["href"]
-                name = link_element.text
+                first_td = tr.find("td", first=True)
+                ass = first_td.find("a")
+                img_element = first_td.find("img", first=True)
+                name = ass[1 if img_element else 0].text
                 print(f"fetching problem {name}")
-                url = "https://27crags.com" + link
+                url = "https://27crags.com" + ass[1 if img_element else 0].attrs["href"]
+                print(f"fetching problem {name}")
                 app_url, thumb_url = await get_problem_data(
                     problem_url=url, client=client, element=tr
                 )

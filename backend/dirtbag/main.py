@@ -54,3 +54,4 @@ async def fixup():
         db.delete(where("name") == "")
     async with DB_sends as db:
         db.delete(where("name") == "")
+        db.delete(where("thumb_url") == "")
