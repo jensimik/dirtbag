@@ -51,7 +51,7 @@ async def _maintenance():
 @app.get("/fixup")
 async def fixup():
     async with DB_todos as db:
-        db.delete(where("name") == "")
+        db.remove(where("name") == "")
     async with DB_sends as db:
-        db.delete(where("name") == "")
-        db.delete(where("thumb_url") == "")
+        db.remove(where("name") == "")
+        db.remove(where("thumb_url") == "")
