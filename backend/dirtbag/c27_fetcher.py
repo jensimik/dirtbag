@@ -125,7 +125,6 @@ async def refresh_todo_list(
                 db_trips.upsert(trip)
         if todo_list := html.find("table.todo-list tbody", first=True):
             for tr in todo_list.find("tr"):
-                tds = tr.find("td.stxt")
                 grade = tr.find("td.grade", first=True).text
                 first_td = tr.find("td", first=True)
                 ass = first_td.find("a")
@@ -151,7 +150,7 @@ async def refresh_todo_list(
                 sector_url = (
                     "https://27crags.com" + tds[1].find("a", first=True).attrs["href"]
                 )
-                sector_name = tds[1].text
+                sector_name = tr.find("td.stxt", first=True).text
                 try:
                     sector_data = await get_sector_data(
                         sector_url=sector_url, client=client
