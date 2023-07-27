@@ -17,7 +17,7 @@
     "vue-chartjs": "^5.2.0",
     "vue-mobile-detection": "^2.0.1",
     "vue-router": "^4.2.2",
-    "vue3-openlayers": "^0.5.1"
+    "vue3-openlayers": "^1.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
