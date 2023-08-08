@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     db_file_todos: Path = "/data/todos.json"
     db_file_sends: Path = "/data/sends.json"
     weather_directory: Path = "/data/"
-    sentry_dsn: str = None
+    sentry_dsn: str = ""
     httpx_user_agent: str = "dirtbag.dk wise.coffee2409@gnerd.dk"
     tz: tzfile = gettz("Europe/Copenhagen")
 
