@@ -10,7 +10,7 @@ certifi==2023.5.7
 charset-normalizer==3.2.0
 click==8.1.6
 cssselect==1.2.0
-fastapi==0.100.0
+fastapi==0.101.0
 h11==0.14.0
 h2==4.1.0
 hpack==4.0.0
@@ -25,7 +25,7 @@ mypy-extensions==1.0.0
 packaging==23.0
 parse==1.19.1
 pathspec==0.11.1
-platformdirs==3.8.0
+platformdirs==3.10.0
 progress==1.6
 pydantic==2.1.1
 pydantic_core==2.4.0
@@ -44,8 +44,8 @@ tinydb==4.8.0
 tomli==2.0.1
 tqdm==4.65.0
 typing_extensions==4.7.1
-urllib3==2.0.3
-uvicorn==0.22.0
+urllib3==2.0.4
+uvicorn==0.23.2
 uvloop==0.17.0
 w3lib==2.1.1
 watchfiles==0.19.0
