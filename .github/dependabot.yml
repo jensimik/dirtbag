@@ -4,10 +4,20 @@ updates:
     directory: "/backend"
     schedule:
       interval: "daily"
+    groups:
+      - dev-dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "starlette"
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "daily"
+    groups:
+      dev-dependencies:
+        patterns:
+          - "*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
