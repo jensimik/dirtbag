@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import Any, Tuple, Type
 
 from dateutil.tz import gettz, tzfile
-from pydantic import BaseSettings
 from pydantic.fields import FieldInfo
 from pydantic_settings import (
     BaseSettings,
