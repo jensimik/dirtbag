@@ -1,8 +1,26 @@
-from typing import Any
-from pydantic import BaseSettings
-from pydantic.env_settings import SettingsSourceCallable
 from pathlib import Path
-from dateutil.tz import tzfile, gettz
+from typing import Any, Tuple, Type
+
+from dateutil.tz import gettz, tzfile
+from pydantic import BaseSettings
+from pydantic.fields import FieldInfo
+from pydantic_settings import (
+    BaseSettings,
+    EnvSettingsSource,
+    PydanticBaseSettingsSource,
+)
+
+
+class MyCustomSource(EnvSettingsSource):
+    def prepare_field_value(
+        self, field_name: str, field: FieldInfo, value: Any, value_is_complex: bool
+    ) -> Any:
+        if field_name == "tz":
+            return gettz(value)
+        elif field_name == "admin_user_ids":
+            if value:
+                return [int(v) for v in value.split()]
+        return value
 
 
 class Settings(BaseSettings):
@@ -22,23 +40,16 @@ class Settings(BaseSettings):
     httpx_user_agent: str = "dirtbag.dk wise.coffee2409@gnerd.dk"
     tz: tzfile = gettz("Europe/Copenhagen")
 
-    class Config:
-        # parse tz field as a dateutil.tz
-        @classmethod
-        def parse_env_var(cls, field_name: str, raw_val: str) -> Any:
-            if field_name == "tz":
-                return gettz(raw_val)
-            return cls.json_loads(raw_val)
-
-        # do not try to load from file
-        @classmethod
-        def customise_sources(
-            cls,
-            init_settings: SettingsSourceCallable,
-            env_settings: SettingsSourceCallable,
-            file_secret_settings: SettingsSourceCallable,
-        ) -> tuple[SettingsSourceCallable, ...]:
-            return env_settings, init_settings
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: Type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> Tuple[PydanticBaseSettingsSource, ...]:
+        return (MyCustomSource(settings_cls),)
 
 
 settings = Settings()
