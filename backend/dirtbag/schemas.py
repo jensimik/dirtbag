@@ -20,7 +20,7 @@ class BaseTodo(BaseModel):
     sector_app_url: str
     area_name: str
     area_url: str
-    comment: Optional[list[Comment]]
+    comment: Optional[list[Comment]] = []
 
 
 class TripTodo(BaseTodo):
@@ -44,15 +44,15 @@ class Sector(BaseModel):
 
 class User(BaseModel):
     user_id: str
-    name: Optional[str]
+    name: Optional[str] = ""
 
 
 class BaseTrip(BaseModel):
     area_name: str
     date_from: date
     date_to: date
-    markdown: Optional[str]
-    markdown_html: Optional[str]
+    markdown: Optional[str] = ""
+    markdown_html: Optional[str] = ""
 
 
 class TripDB(BaseTrip):
