@@ -27,8 +27,8 @@ parse==1.19.1
 pathspec==0.11.2
 platformdirs==3.10.0
 progress==1.6
-pydantic==2.2.1
-pydantic_core==2.6.1
+pydantic==2.3.0
+pydantic_core==2.6.3
 pydantic-settings==2.0.3
 pyquery==2.0.0
 python-dateutil==2.8.2
