@@ -27,8 +27,8 @@ parse==1.19.1
 pathspec==0.11.2
 platformdirs==3.10.0
 progress==1.6
-pydantic==2.2.1
-pydantic_core==2.6.1
+pydantic==2.3.0
+pydantic_core==2.6.3
 pydantic-settings==2.0.3
 pyquery==2.0.0
 python-dateutil==2.8.2
@@ -48,6 +48,6 @@ urllib3==2.0.4
 uvicorn==0.23.2
 uvloop==0.17.0
 w3lib==2.1.2
-watchfiles==0.19.0
+watchfiles==0.20.0
 websockets==11.0.3
 zipp==3.16.2
