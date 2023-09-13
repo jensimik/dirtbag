@@ -74,11 +74,11 @@ async def get_sector_data(sector_url: str, client: httpx.AsyncClient) -> dict:
     if r.is_success:
         html = HTML(html=r.content)
         app_url = get_app_argument_from_html(html=html)
-        crag_location = html.find("h2.craglocation", first=True)
-        ass = crag_location.find("a")
-        if "in the area of" in ass[0].text:
-            area_url = "https://27crags.com" + ass[0].attrs["href"]
-            area_name = ass[0].text.replace("in the area of ", "").split(",")[0]
+        area_div = html.find("div.area-container", first=True)
+        ass = area_div.find("a", first=True)
+        if ", " in ass.text:
+            area_url = "https://27crags.com" + ass.attrs["href"]
+            area_name = ass.text.split(", ")[0]
         else:
             area_url = ""
             area_name = ""
