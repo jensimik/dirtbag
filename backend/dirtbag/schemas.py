@@ -6,7 +6,7 @@ from typing import Literal, Optional, Union, AnyStr
 class Comment(BaseModel):
     type: str
     text: str
-    url: Optional[str]
+    url: Optional[str] = ""
 
 
 class BaseTodo(BaseModel):
@@ -26,7 +26,7 @@ class BaseTodo(BaseModel):
 class TripTodo(BaseTodo):
     user_ids: list[str]
     ticks: list[str]
-    comments: list[Comment]
+    comments: list[Comment] = []
 
 
 class DBTodo(BaseTodo):
