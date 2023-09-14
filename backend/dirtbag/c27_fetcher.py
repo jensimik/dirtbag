@@ -136,9 +136,7 @@ async def refresh_todo_list(
                     problem_url=url, client=client, element=tr
                 )
                 comment = []
-                if ascent_details := tr.find(
-                    "td.stxt > div.ascent-details", first=True
-                ):
+                if ascent_details := tr.find("div.ascent-details", first=True):
                     for link in ascent_details.find("a"):
                         _url = link.attrs["href"]
                         o = urlparse(_url)
