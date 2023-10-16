@@ -46,7 +46,7 @@ tqdm==4.66.1
 typing_extensions==4.8.0
 urllib3==2.0.6
 uvicorn==0.23.2
-uvloop==0.17.0
+uvloop==0.18.0
 w3lib==2.1.2
 watchfiles==0.20.0
 websockets==11.0.3
