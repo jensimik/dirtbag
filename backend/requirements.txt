@@ -18,7 +18,7 @@ httpcore==0.18.0
 httptools==0.6.0
 httpx==0.25.0
 hyperframe==6.0.1
-idna==3.4
+idna==3.6
 lxml==4.9.3
 Markdown==3.4.4
 mypy-extensions==1.0.0
